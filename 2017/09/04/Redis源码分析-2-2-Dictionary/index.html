@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Redis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="总体介绍dict为Redis内置的字典结构，可以容纳任意类型的key和value（通过void指针实现）。和普通的哈希表相比，显著优势在于字典容量巨大的时候，普通字典的一次扩容可能有巨大的耗时，也许会让redis停止响应几秒钟甚至更长时间，而redis的dict的渐进式rehash则避免了这一情况。 数据定义12345">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis源码分析(2.2)-Dictionary">
+<meta property="og:url" content="http://iridescent.com.cn/2017/09/04/Redis源码分析-2-2-Dictionary/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="总体介绍dict为Redis内置的字典结构，可以容纳任意类型的key和value（通过void指针实现）。和普通的哈希表相比，显著优势在于字典容量巨大的时候，普通字典的一次扩容可能有巨大的耗时，也许会让redis停止响应几秒钟甚至更长时间，而redis的dict的渐进式rehash则避免了这一情况。 数据定义123456789101112131415161718192021222324252627">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.901Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis源码分析(2.2)-Dictionary">
+<meta name="twitter:description" content="总体介绍dict为Redis内置的字典结构，可以容纳任意类型的key和value（通过void指针实现）。和普通的哈希表相比，显著优势在于字典容量巨大的时候，普通字典的一次扩容可能有巨大的耗时，也许会让redis停止响应几秒钟甚至更长时间，而redis的dict的渐进式rehash则避免了这一情况。 数据定义123456789101112131415161718192021222324252627">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2017/09/04/Redis源码分析-2-2-Dictionary/"/>
+
+
+
+
+
+  <title>Redis源码分析(2.2)-Dictionary | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2017/09/04/Redis源码分析-2-2-Dictionary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Redis源码分析(2.2)-Dictionary</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-04T20:24:30+08:00">
+                2017-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="总体介绍"><a href="#总体介绍" class="headerlink" title="总体介绍"></a>总体介绍</h1><p>dict为Redis内置的字典结构，可以容纳任意类型的key和value（通过void指针实现）。和普通的哈希表相比，显著优势在于字典容量巨大的时候，普通字典的一次扩容可能有巨大的耗时，也许会让redis停止响应几秒钟甚至更长时间，而redis的dict的渐进式rehash则避免了这一情况。</p>
+<h1 id="数据定义"><a href="#数据定义" class="headerlink" title="数据定义"></a>数据定义</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">// 字典Entry</span><br><span class="line">typedef struct dictEntry &#123;</span><br><span class="line">    void *key;</span><br><span class="line">    union &#123;</span><br><span class="line">        void *val;</span><br><span class="line">        uint64_t u64;</span><br><span class="line">        int64_t s64;</span><br><span class="line">        double d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    struct dictEntry *next; // 所有hash相同的的Entry被组织成一条链表</span><br><span class="line">&#125; dictEntry;</span><br><span class="line">// 标示字典类型</span><br><span class="line">typedef struct dictType &#123;</span><br><span class="line">    unsigned int (*hashFunction)(const void *key);</span><br><span class="line">    void *(*keyDup)(void *privdata, const void *key);</span><br><span class="line">    void *(*valDup)(void *privdata, const void *obj);</span><br><span class="line">    int (*keyCompare)(void *privdata, const void *key1, const void *key2);</span><br><span class="line">    void (*keyDestructor)(void *privdata, void *key);</span><br><span class="line">    void (*valDestructor)(void *privdata, void *obj);</span><br><span class="line">&#125; dictType;</span><br><span class="line"></span><br><span class="line">/* This is our hash table structure. Every dictionary has two of this as we</span><br><span class="line"> * implement incremental rehashing, for the old to the new table. */</span><br><span class="line">typedef struct dictht &#123;</span><br><span class="line">    dictEntry **table; // hash table</span><br><span class="line">    unsigned long size;  // hash table 容量</span><br><span class="line">    unsigned long sizemask; // mask</span><br><span class="line">    unsigned long used;  // hash table里Entity数量</span><br><span class="line">&#125; dictht;</span><br><span class="line"></span><br><span class="line">typedef struct dict &#123;</span><br><span class="line">    dictType *type;</span><br><span class="line">    void *privdata;</span><br><span class="line">    dictht ht[2]; // 两个hashtable以便渐进式rehash</span><br><span class="line">    long rehashidx; /* rehashing not in progress if rehashidx == -1 */</span><br><span class="line">    int iterators; /* number of iterators currently running */</span><br><span class="line">&#125; dict;</span><br><span class="line"></span><br><span class="line">/* If safe is set to 1 this is a safe iterator, that means, you can call</span><br><span class="line"> * dictAdd, dictFind, and other functions against the dictionary even while</span><br><span class="line"> * iterating. Otherwise it is a non safe iterator, and only dictNext()</span><br><span class="line"> * should be called while iterating. */</span><br><span class="line">typedef struct dictIterator &#123;</span><br><span class="line">    dict *d;</span><br><span class="line">    long index;</span><br><span class="line">    int table, safe;</span><br><span class="line">    dictEntry *entry, *nextEntry;</span><br><span class="line">    /* unsafe iterator fingerprint for misuse detection. */</span><br><span class="line">    long long fingerprint;</span><br><span class="line">&#125; dictIterator;</span><br></pre></td></tr></table></figure>
+<h1 id="主要API"><a href="#主要API" class="headerlink" title="主要API"></a>主要API</h1><h2 id="MACROS"><a href="#MACROS" class="headerlink" title="MACROS"></a>MACROS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#define dictFreeVal(d, entry) \</span><br><span class="line">    if ((d)-&gt;type-&gt;valDestructor) \</span><br><span class="line">        (d)-&gt;type-&gt;valDestructor((d)-&gt;privdata, (entry)-&gt;v.val)</span><br><span class="line"></span><br><span class="line">#define dictSetVal(d, entry, _val_) do &#123; \</span><br><span class="line">    if ((d)-&gt;type-&gt;valDup) \</span><br><span class="line">        entry-&gt;v.val = (d)-&gt;type-&gt;valDup((d)-&gt;privdata, _val_); \</span><br><span class="line">    else \</span><br><span class="line">        entry-&gt;v.val = (_val_); \</span><br><span class="line">&#125; while(0)</span><br><span class="line"></span><br><span class="line">#define dictSetSignedIntegerVal(entry, _val_) \</span><br><span class="line">    do &#123; entry-&gt;v.s64 = _val_; &#125; while(0)</span><br><span class="line"></span><br><span class="line">#define dictSetUnsignedIntegerVal(entry, _val_) \</span><br><span class="line">    do &#123; entry-&gt;v.u64 = _val_; &#125; while(0)</span><br><span class="line"></span><br><span class="line">#define dictSetDoubleVal(entry, _val_) \</span><br><span class="line">    do &#123; entry-&gt;v.d = _val_; &#125; while(0)</span><br><span class="line"></span><br><span class="line">#define dictFreeKey(d, entry) \</span><br><span class="line">    if ((d)-&gt;type-&gt;keyDestructor) \</span><br><span class="line">        (d)-&gt;type-&gt;keyDestructor((d)-&gt;privdata, (entry)-&gt;key)</span><br><span class="line"></span><br><span class="line">#define dictSetKey(d, entry, _key_) do &#123; \</span><br><span class="line">    if ((d)-&gt;type-&gt;keyDup) \</span><br><span class="line">        entry-&gt;key = (d)-&gt;type-&gt;keyDup((d)-&gt;privdata, _key_); \</span><br><span class="line">    else \</span><br><span class="line">        entry-&gt;key = (_key_); \</span><br><span class="line">&#125; while(0)</span><br><span class="line"></span><br><span class="line">#define dictCompareKeys(d, key1, key2) \</span><br><span class="line">    (((d)-&gt;type-&gt;keyCompare) ? \</span><br><span class="line">        (d)-&gt;type-&gt;keyCompare((d)-&gt;privdata, key1, key2) : \</span><br><span class="line">        (key1) == (key2))</span><br><span class="line"></span><br><span class="line">#define dictHashKey(d, key) (d)-&gt;type-&gt;hashFunction(key)</span><br><span class="line">#define dictGetKey(he) ((he)-&gt;key)</span><br><span class="line">#define dictGetVal(he) ((he)-&gt;v.val)</span><br><span class="line">#define dictGetSignedIntegerVal(he) ((he)-&gt;v.s64)</span><br><span class="line">#define dictGetUnsignedIntegerVal(he) ((he)-&gt;v.u64)</span><br><span class="line">#define dictGetDoubleVal(he) ((he)-&gt;v.d)</span><br><span class="line">#define dictSlots(d) ((d)-&gt;ht[0].size+(d)-&gt;ht[1].size)</span><br><span class="line">#define dictSize(d) ((d)-&gt;ht[0].used+(d)-&gt;ht[1].used)</span><br><span class="line">#define dictIsRehashing(d) ((d)-&gt;rehashidx != -1)</span><br></pre></td></tr></table></figure>
+<p>含义明显，不做解释</p>
+<h2 id="建立"><a href="#建立" class="headerlink" title="建立"></a>建立</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/* Create a new hash table */</span><br><span class="line">dict *dictCreate(dictType *type,</span><br><span class="line">        void *privDataPtr)</span><br><span class="line">&#123;</span><br><span class="line">    dict *d = zmalloc(sizeof(*d));</span><br><span class="line"></span><br><span class="line">    _dictInit(d,type,privDataPtr);</span><br><span class="line">    return d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* Initialize the hash table */</span><br><span class="line">int _dictInit(dict *d, dictType *type,</span><br><span class="line">        void *privDataPtr)</span><br><span class="line">&#123;</span><br><span class="line">    _dictReset(&amp;d-&gt;ht[0]);</span><br><span class="line">    _dictReset(&amp;d-&gt;ht[1]);</span><br><span class="line">    d-&gt;type = type;</span><br><span class="line">    d-&gt;privdata = privDataPtr;</span><br><span class="line">    d-&gt;rehashidx = -1;</span><br><span class="line">    d-&gt;iterators = 0;</span><br><span class="line">    return DICT_OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static void _dictReset(dictht *ht)</span><br><span class="line">&#123;</span><br><span class="line">    ht-&gt;table = NULL;</span><br><span class="line">    ht-&gt;size = 0;</span><br><span class="line">    ht-&gt;sizemask = 0;</span><br><span class="line">    ht-&gt;used = 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下划线开头的为内置API。建立dict后要进行各种初始化工作</p>
+<h2 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">/* Expand or create the hash table */</span><br><span class="line">int dictExpand(dict *d, unsigned long size)</span><br><span class="line">&#123;</span><br><span class="line">    dictht n; /* the new hash table */</span><br><span class="line">    unsigned long realsize = _dictNextPower(size);</span><br><span class="line"></span><br><span class="line">    /* the size is invalid if it is smaller than the number of</span><br><span class="line">     * elements already inside the hash table */</span><br><span class="line">    if (dictIsRehashing(d) || d-&gt;ht[0].used &gt; size)</span><br><span class="line">        return DICT_ERR;</span><br><span class="line"></span><br><span class="line">    /* Rehashing to the same table size is not useful. */</span><br><span class="line">    if (realsize == d-&gt;ht[0].size) return DICT_ERR;</span><br><span class="line"></span><br><span class="line">    /* Allocate the new hash table and initialize all pointers to NULL */</span><br><span class="line">    n.size = realsize;</span><br><span class="line">    n.sizemask = realsize-1;</span><br><span class="line">    n.table = zcalloc(realsize*sizeof(dictEntry*));</span><br><span class="line">    n.used = 0;</span><br><span class="line"></span><br><span class="line">    /* Is this the first initialization? If so it&apos;s not really a rehashing</span><br><span class="line">     * we just set the first hash table so that it can accept keys. */</span><br><span class="line">    if (d-&gt;ht[0].table == NULL) &#123;</span><br><span class="line">        d-&gt;ht[0] = n;</span><br><span class="line">        return DICT_OK;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Prepare a second hash table for incremental rehashing */</span><br><span class="line">    d-&gt;ht[1] = n;</span><br><span class="line">    d-&gt;rehashidx = 0;</span><br><span class="line">    return DICT_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每次扩大为比原来size打的最小的2的n次方，准备进行渐进式rehash</p>
+<h2 id="rehash"><a href="#rehash" class="headerlink" title="rehash"></a>rehash</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">/* Performs N steps of incremental rehashing. Returns 1 if there are still</span><br><span class="line"> * keys to move from the old to the new hash table, otherwise 0 is returned.</span><br><span class="line"> *</span><br><span class="line"> * Note that a rehashing step consists in moving a bucket (that may have more</span><br><span class="line"> * than one key as we use chaining) from the old to the new hash table, however</span><br><span class="line"> * since part of the hash table may be composed of empty spaces, it is not</span><br><span class="line"> * guaranteed that this function will rehash even a single bucket, since it</span><br><span class="line"> * will visit at max N*10 empty buckets in total, otherwise the amount of</span><br><span class="line"> * work it does would be unbound and the function may block for a long time. */</span><br><span class="line">int dictRehash(dict *d, int n) &#123;</span><br><span class="line">    int empty_visits = n*10; /* Max number of empty buckets to visit. */</span><br><span class="line">    if (!dictIsRehashing(d)) return 0;</span><br><span class="line"></span><br><span class="line">    while(n-- &amp;&amp; d-&gt;ht[0].used != 0) &#123;</span><br><span class="line">        dictEntry *de, *nextde;</span><br><span class="line"></span><br><span class="line">        /* Note that rehashidx can&apos;t overflow as we are sure there are more</span><br><span class="line">         * elements because ht[0].used != 0 */</span><br><span class="line">        assert(d-&gt;ht[0].size &gt; (unsigned long)d-&gt;rehashidx);</span><br><span class="line">        while(d-&gt;ht[0].table[d-&gt;rehashidx] == NULL) &#123;</span><br><span class="line">            d-&gt;rehashidx++;</span><br><span class="line">            if (--empty_visits == 0) return 1;</span><br><span class="line">        &#125;</span><br><span class="line">        de = d-&gt;ht[0].table[d-&gt;rehashidx];</span><br><span class="line">        /* Move all the keys in this bucket from the old to the new hash HT */</span><br><span class="line">        while(de) &#123;</span><br><span class="line">            unsigned int h;</span><br><span class="line"></span><br><span class="line">            nextde = de-&gt;next;</span><br><span class="line">            /* Get the index in the new hash table */</span><br><span class="line">            h = dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[1].sizemask;</span><br><span class="line">            de-&gt;next = d-&gt;ht[1].table[h];</span><br><span class="line">            d-&gt;ht[1].table[h] = de;</span><br><span class="line">            d-&gt;ht[0].used--;</span><br><span class="line">            d-&gt;ht[1].used++;</span><br><span class="line">            de = nextde;</span><br><span class="line">        &#125;</span><br><span class="line">        d-&gt;ht[0].table[d-&gt;rehashidx] = NULL;</span><br><span class="line">        d-&gt;rehashidx++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Check if we already rehashed the whole table... */</span><br><span class="line">    if (d-&gt;ht[0].used == 0) &#123;</span><br><span class="line">        zfree(d-&gt;ht[0].table);</span><br><span class="line">        d-&gt;ht[0] = d-&gt;ht[1];</span><br><span class="line">        _dictReset(&amp;d-&gt;ht[1]);</span><br><span class="line">        d-&gt;rehashidx = -1;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* More to rehash... */</span><br><span class="line">    return 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>源码注释很全，简单来说就是对dict进行n个step的rehash，每一个step会把0号hashtable的当前rehashindex的所有元素移动到新的hashtable中，并且最多检查n*10个rehashindex<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/* Rehash for an amount of time between ms milliseconds and ms+1 milliseconds */</span><br><span class="line">int dictRehashMilliseconds(dict *d, int ms) &#123;</span><br><span class="line">    long long start = timeInMilliseconds();</span><br><span class="line">    int rehashes = 0;</span><br><span class="line"></span><br><span class="line">    while(dictRehash(d,100)) &#123;</span><br><span class="line">        rehashes += 100;</span><br><span class="line">        if (timeInMilliseconds()-start &gt; ms) break;</span><br><span class="line">    &#125;</span><br><span class="line">    return rehashes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>进行不超过ms毫秒的rehash，恩。。。这个是比较粗略的估计。</p>
+<h2 id="添加-删除-update"><a href="#添加-删除-update" class="headerlink" title="添加 删除 update"></a>添加 删除 update</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line">/* Add an element to the target hash table */</span><br><span class="line">int dictAdd(dict *d, void *key, void *val)</span><br><span class="line">&#123;</span><br><span class="line">    dictEntry *entry = dictAddRaw(d,key);  // 添加entity</span><br><span class="line"></span><br><span class="line">    if (!entry) return DICT_ERR;</span><br><span class="line">    dictSetVal(d, entry, val); // 向entity中添加value</span><br><span class="line">    return DICT_OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* Low level add. This function adds the e链式队列ead of setting</span><br><span class="line"> * a value returns the dictEntry structure to the user, that will make</span><br><span class="line"> * sure to fill the value field as he wishes.</span><br><span class="line"> *</span><br><span class="line"> * This function is also directly exposed to the user API to be called</span><br><span class="line"> * mainly in order to store non-pointers inside the hash value, example:</span><br><span class="line"> *</span><br><span class="line"> * entry = dictAddRaw(dict,mykey);</span><br><span class="line"> * if (entry != NULL) dictSetSignedIntegerVal(entry,1000);</span><br><span class="line"> *</span><br><span class="line"> * Return values:</span><br><span class="line"> *</span><br><span class="line"> * If key already exists NULL is returned.</span><br><span class="line"> * If key was added, the hash entry is returned to be manipulated by the caller.</span><br><span class="line"> */</span><br><span class="line">dictEntry *dictAddRaw(dict *d, void *key)</span><br><span class="line">&#123;</span><br><span class="line">    int index;</span><br><span class="line">    dictEntry *entry;</span><br><span class="line">    dictht *ht;</span><br><span class="line"></span><br><span class="line">    if (dictIsRehashing(d)) _dictRehashStep(d); // 如果在rehash中，进行一步的rehash</span><br><span class="line"></span><br><span class="line">    /* Get the index of the new element, or -1 if</span><br><span class="line">     * the element already exists. */</span><br><span class="line">    if ((index = _dictKeyIndex(d, key)) == -1) // 如果dict已经有了相关元素，就会添加失败。</span><br><span class="line">        return NULL;</span><br><span class="line"></span><br><span class="line">    /* Allocate the memory and store the new entry.</span><br><span class="line">     * Insert the element in top, with the assumption that in a database</span><br><span class="line">     * system it is more likely that recently added entries are accessed</span><br><span class="line">     * more frequently. */</span><br><span class="line">    ht = dictIsRehashing(d) ? &amp;d-&gt;ht[1] : &amp;d-&gt;ht[0]; // 如果在rehash中就会添加到table[1]中，否则会添加到table[0]</span><br><span class="line">    entry = zmalloc(sizeof(*entry));</span><br><span class="line">    entry-&gt;next = ht-&gt;table[index]; // 插入到链式队列头部</span><br><span class="line">    ht-&gt;table[index] = entry;</span><br><span class="line">    ht-&gt;used++;</span><br><span class="line"></span><br><span class="line">    /* Set the hash entry fields. */</span><br><span class="line">    dictSetKey(d, entry, key); </span><br><span class="line">    return entry;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int dictDelete(dict *ht, const void *key) &#123;</span><br><span class="line">    return dictGenericDelete(ht,key,0);</span><br><span class="line">&#125;</span><br><span class="line">/* Search and remove an element */</span><br><span class="line">static int dictGenericDelete(dict *d, const void *key, int nofree)</span><br><span class="line">&#123;</span><br><span class="line">    unsigned int h, idx;</span><br><span class="line">    dictEntry *he, *prevHe;</span><br><span class="line">    int table;</span><br><span class="line"></span><br><span class="line">    if (d-&gt;ht[0].size == 0) return DICT_ERR; /* d-&gt;ht[0].table is NULL */</span><br><span class="line">    if (dictIsRehashing(d)) _dictRehashStep(d); // 进行一次rehash</span><br><span class="line">    h = dictHashKey(d, key);</span><br><span class="line"></span><br><span class="line">    // 可能存在于table0或者table1中</span><br><span class="line">    for (table = 0; table &lt;= 1; table++) &#123;</span><br><span class="line">        idx = h &amp; d-&gt;ht[table].sizemask;</span><br><span class="line">        he = d-&gt;ht[table].table[idx];</span><br><span class="line">        prevHe = NULL;</span><br><span class="line">        while(he) &#123; // 遍历链表，找到对应的entity</span><br><span class="line">            if (key==he-&gt;key || dictCompareKeys(d, key, he-&gt;key)) &#123;</span><br><span class="line">                /* Unlink the element from the list */</span><br><span class="line">                if (prevHe)</span><br><span class="line">                    prevHe-&gt;next = he-&gt;next;</span><br><span class="line">                else</span><br><span class="line">                    d-&gt;ht[table].table[idx] = he-&gt;next;</span><br><span class="line">                if (!nofree) &#123;</span><br><span class="line">                    dictFreeKey(d, he);</span><br><span class="line">                    dictFreeVal(d, he);</span><br><span class="line">                &#125;</span><br><span class="line">                zfree(he);</span><br><span class="line">                d-&gt;ht[table].used--;</span><br><span class="line">                return DICT_OK;</span><br><span class="line">            &#125;</span><br><span class="line">            prevHe = he;</span><br><span class="line">            he = he-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        if (!dictIsRehashing(d)) break;</span><br><span class="line">    &#125;</span><br><span class="line">    return DICT_ERR; /* not found */</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/* Add an element, discarding the old if the key already exists.</span><br><span class="line"> * Return 1 if the key was added from scratch, 0 if there was already an</span><br><span class="line"> * element with such key and dictReplace() just performed a value update</span><br><span class="line"> * operation. */</span><br><span class="line">int dictReplace(dict *d, void *key, void *val)</span><br><span class="line">&#123;</span><br><span class="line">    dictEntry *entry, auxentry;</span><br><span class="line"></span><br><span class="line">    /* Try to add the element. If the key</span><br><span class="line">     * does not exists dictAdd will suceed. */</span><br><span class="line">    if (dictAdd(d, key, val) == DICT_OK) // dict不存在key，直接add</span><br><span class="line">        return 1;</span><br><span class="line">    /* It already exists, get the entry */</span><br><span class="line">    entry = dictFind(d, key);</span><br><span class="line">    /* Set the new value and free the old one. Note that it is important</span><br><span class="line">     * to do that in this order, as the value may just be exactly the same</span><br><span class="line">     * as the previous one. In this context, think to reference counting,</span><br><span class="line">     * you want to increment (set), and then decrement (free), and not the</span><br><span class="line">     * reverse. */</span><br><span class="line">    auxentry = *entry; // 这三句顺序不能变因为key和val可能和entity变量中的完全相等，先dictSetVal dump一下再进行delete</span><br><span class="line">    dictSetVal(d, entry, val);</span><br><span class="line">    dictFreeVal(d, &amp;auxentry);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">typedef struct dictIterator &#123;</span><br><span class="line">    dict *d;</span><br><span class="line">    long index;</span><br><span class="line">    int table, safe;</span><br><span class="line">    dictEntry *entry, *nextEntry;</span><br><span class="line">    /* unsafe iterator fingerprint for misuse detection. */</span><br><span class="line">    long long fingerprint;</span><br><span class="line">&#125; dictIterator;</span><br><span class="line">dictIterator *dictGetIterator(dict *d)</span><br><span class="line">&#123;</span><br><span class="line">    dictIterator *iter = zmalloc(sizeof(*iter));</span><br><span class="line"></span><br><span class="line">    iter-&gt;d = d;</span><br><span class="line">    iter-&gt;table = 0;</span><br><span class="line">    iter-&gt;index = -1;</span><br><span class="line">    iter-&gt;safe = 0;</span><br><span class="line">    iter-&gt;entry = NULL;</span><br><span class="line">    iter-&gt;nextEntry = NULL;</span><br><span class="line">    return iter;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dictIterator *dictGetSafeIterator(dict *d) &#123;</span><br><span class="line">    dictIterator *i = dictGetIterator(d);</span><br><span class="line"></span><br><span class="line">    i-&gt;safe = 1;</span><br><span class="line">    return i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dictEntry *dictNext(dictIterator *iter)</span><br><span class="line">&#123;</span><br><span class="line">    while (1) &#123;</span><br><span class="line">        if (iter-&gt;entry == NULL) &#123;</span><br><span class="line">            dictht *ht = &amp;iter-&gt;d-&gt;ht[iter-&gt;table];</span><br><span class="line">            if (iter-&gt;index == -1 &amp;&amp; iter-&gt;table == 0) &#123;</span><br><span class="line">                if (iter-&gt;safe)</span><br><span class="line">                    iter-&gt;d-&gt;iterators++;</span><br><span class="line">                else</span><br><span class="line">                    iter-&gt;fingerprint = dictFingerprint(iter-&gt;d);</span><br><span class="line">            &#125;</span><br><span class="line">            iter-&gt;index++;</span><br><span class="line">            if (iter-&gt;index &gt;= (long) ht-&gt;size) &#123;</span><br><span class="line">                if (dictIsRehashing(iter-&gt;d) &amp;&amp; iter-&gt;table == 0) &#123;</span><br><span class="line">                    iter-&gt;table++;</span><br><span class="line">                    iter-&gt;index = 0;</span><br><span class="line">                    ht = &amp;iter-&gt;d-&gt;ht[1];</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            iter-&gt;entry = ht-&gt;table[iter-&gt;index];</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            iter-&gt;entry = iter-&gt;nextEntry;</span><br><span class="line">        &#125;</span><br><span class="line">        if (iter-&gt;entry) &#123;</span><br><span class="line">            /* We need to save the &apos;next&apos; here, the iterator user</span><br><span class="line">             * may delete the entry we are returning. */</span><br><span class="line">            iter-&gt;nextEntry = iter-&gt;entry-&gt;next;</span><br><span class="line">            return iter-&gt;entry;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return NULL;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void dictReleaseIterator(dictIterator *iter)</span><br><span class="line">&#123;</span><br><span class="line">    if (!(iter-&gt;index == -1 &amp;&amp; iter-&gt;table == 0)) &#123;</span><br><span class="line">        if (iter-&gt;safe)</span><br><span class="line">            iter-&gt;d-&gt;iterators--;</span><br><span class="line">        else</span><br><span class="line">            assert(iter-&gt;fingerprint == dictFingerprint(iter-&gt;d));</span><br><span class="line">    &#125;</span><br><span class="line">    zfree(iter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Iterator 的safe字段代表了是不是一个safe iterator， 如果是的话可以再迭代过程中调用dictAdd dictFind 等函数来给dict中的元素赋值，否则的话只能调用dictNext。</p>
+<p>在unsafe模式下，通过dictFingerprint获得字典的一个签名，并在release iterator 的时候释放iterator<br>遍历的过程也比较简单，先遍历table 0，如果有rehash就再遍历table 1</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/02/Redis源码分析-2-1-Dynamic-string/" rel="next" title="Redis源码分析-(2.1)-Dynamic string">
+                <i class="fa fa-chevron-left"></i> Redis源码分析-(2.1)-Dynamic string
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/06/Redis源码分析-2-5-Skip-list/" rel="prev" title="Redis源码分析(2.5)-Skiplist">
+                Redis源码分析(2.5)-Skiplist <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#总体介绍"><span class="nav-number">1.</span> <span class="nav-text">总体介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据定义"><span class="nav-number">2.</span> <span class="nav-text">数据定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主要API"><span class="nav-number">3.</span> <span class="nav-text">主要API</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MACROS"><span class="nav-number">3.1.</span> <span class="nav-text">MACROS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立"><span class="nav-number">3.2.</span> <span class="nav-text">建立</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩容"><span class="nav-number">3.3.</span> <span class="nav-text">扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rehash"><span class="nav-number">3.4.</span> <span class="nav-text">rehash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加-删除-update"><span class="nav-number">3.5.</span> <span class="nav-text">添加 删除 update</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遍历"><span class="nav-number">3.6.</span> <span class="nav-text">遍历</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

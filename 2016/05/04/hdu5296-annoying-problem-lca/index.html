@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="LCA," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="题目链接：Annoying problem 很神奇的一道LCA 先做一个dfs序，以后所有的查询x都可以对应到u，v所在的链到查询点x的权重，对应加减就可以 u是S中小于u的dfs序的第一个点 v是S中大于u的dfs序的第一个点 如果u，v中有一个不存在，就把u，v分别换成dfs序最小和最大的两个点。 这样处理就非常神">
+<meta name="keywords" content="LCA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDU5296 Annoying problem LCA">
+<meta property="og:url" content="http://iridescent.com.cn/2016/05/04/hdu5296-annoying-problem-lca/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="题目链接：Annoying problem 很神奇的一道LCA 先做一个dfs序，以后所有的查询x都可以对应到u，v所在的链到查询点x的权重，对应加减就可以 u是S中小于u的dfs序的第一个点 v是S中大于u的dfs序的第一个点 如果u，v中有一个不存在，就把u，v分别换成dfs序最小和最大的两个点。 这样处理就非常神奇的完成了所有的题目要求。 每次影响的权重为dist[x] + dist[LCA">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.957Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HDU5296 Annoying problem LCA">
+<meta name="twitter:description" content="题目链接：Annoying problem 很神奇的一道LCA 先做一个dfs序，以后所有的查询x都可以对应到u，v所在的链到查询点x的权重，对应加减就可以 u是S中小于u的dfs序的第一个点 v是S中大于u的dfs序的第一个点 如果u，v中有一个不存在，就把u，v分别换成dfs序最小和最大的两个点。 这样处理就非常神奇的完成了所有的题目要求。 每次影响的权重为dist[x] + dist[LCA">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/05/04/hdu5296-annoying-problem-lca/"/>
+
+
+
+
+
+  <title>HDU5296 Annoying problem LCA | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/05/04/hdu5296-annoying-problem-lca/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HDU5296 Annoying problem LCA</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-04T22:41:43+08:00">
+                2016-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>题目链接：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=5296" target="_blank" rel="noopener">Annoying problem</a></p>
+<p>很神奇的一道LCA</p>
+<p>先做一个dfs序，以后所有的查询x都可以对应到u，v所在的链到查询点x的权重，对应加减就可以</p>
+<p>u是S中小于u的dfs序的第一个点</p>
+<p>v是S中大于u的dfs序的第一个点</p>
+<p>如果u，v中有一个不存在，就把u，v分别换成dfs序最小和最大的两个点。</p>
+<p>这样处理就非常神奇的完成了所有的题目要求。</p>
+<p>每次影响的权重为dist[x] + dist[LCA(u, v)] - dist[LCA(x, u)] - dist[LCA(x, v)]</p>
+<p>AC代码：</p>
+<p><pre class="lang:c++ decode:true ">#include&lt;iostream&gt;</pre></p>
+<p>#include&lt;stdio.h&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;cmath&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;ctime&gt;</p>
+<p>#include&lt;cstring&gt;<br>using namespace std;</p>
+<p>typedef long long LL;<br>const int MAXN = 100000 + 10;<br>const int DEG = 20;<br>struct Edge {<br>    int to, next;<br>    int dis;<br>} edge[MAXN &lt;&lt; 1];<br>int head[MAXN], tot;<br>void addedge(int u, int v, int dis) {<br>    edge[tot].to = v;<br>    edge[tot].next = head[u];<br>    edge[tot].dis = dis;<br>    head[u] = tot++;<br>}<br>void init() {<br>    memset(head, -1, sizeof head);<br>    tot = 0;<br>}<br>int fa[MAXN][DEG];<br>int deg[MAXN];<br>int dist[MAXN];<br>void BFS(int root) {<br>    queue&lt;int&gt; Q;<br>    deg[root] = 0;<br>    fa[root][0] = root;<br>    Q.push(root);<br>    while(!Q.empty()) {<br>        int u = Q.front();<br>        Q.pop();<br>        for(int i = 1 ; i &lt; DEG ; i++)<br>            fa[u][i] = fa[fa[u][i - 1]][i - 1];<br>        for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>            int v = edge[i].to;<br>            if(v == fa[u][0]) continue;<br>            fa[v][0] = u;<br>            deg[v] = deg[u] + 1;<br>            Q.push(v);<br>        }<br>    }<br>}<br>int LCA(int u, int v) {<br>    if(deg[u] &gt; deg[v]) swap(u, v);<br>    int hu = deg[u], hv = deg[v];<br>    int tu = u, tv = v;<br>    for(int det = hv - hu, i = 0 ; det ; det &gt;&gt;= 1, i++)<br>        if(det &amp; 1)<br>            tv = fa[tv][i];<br>    if(tu == tv) return tu;<br>    for(int i = DEG - 1 ; i &gt;= 0 ; i–) {<br>        if(fa[tu][i] == fa[tv][i]) continue;<br>        tu = fa[tu][i];<br>        tv = fa[tv][i];<br>    }<br>    return fa[tu][0];<br>}<br>int dfn[MAXN];<br>int fdfn[MAXN];<br>int pos;<br>void dfs(int u, int fa) {<br>    dfn[u] = pos++;<br>    fdfn[dfn[u]] = u;<br>    for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>        int v = edge[i].to;<br>        if(v != fa) {<br>            dist[v] = dist[u] + edge[i].dis;<br>            dfs(v, u);<br>        }<br>    }<br>}<br>int main() {<br>    int ca = 1;<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    while(T–) {<br>        int n, q;<br>        scanf(“%d%d”, &amp;n, &amp;q);<br>        init();<br>        int u, v, dis;<br>        for(int i = 0 ; i &lt; n - 1 ; i++) {<br>            scanf(“%d%d%d”, &amp;u, &amp;v, &amp;dis);<br>            addedge(u, v, dis);<br>            addedge(v, u, dis);<br>        }<br>        BFS(1);<br>        pos = 1;<br>        memset(dist, 0, sizeof dist);<br>        dfs(1, -1);<br>        int ans = 0;<br>        set&lt;int&gt; s;<br>        printf(“Case #%d:\n”, ca++);<br>        while(q–) {<br>            int op, x;<br>            scanf(“%d%d”, &amp;op, &amp;x);<br>            if(op == 1) {<br>                if(s.size() == 0) {<br>                    s.insert(dfn[x]);<br>                }<br>                else if(!s.count(dfn[x])) {<br>                    set&lt;int&gt;::iterator it = s.lower_bound(dfn[x]);<br>                    if(it == s.begin() || it == s.end()) {<br>                        u = fdfn[<em>s.begin()];<br>                        v = fdfn[</em>s.rbegin()];<br>                    } else {<br>                        u = fdfn[<em>it]; –it;<br>                        v = fdfn[</em>it];<br>                    }<br>                    s.insert(dfn[x]);<br>                    ans += (dist[x] + dist[LCA(u, v)] - dist[LCA(x, u)] - dist[LCA(x, v)]);<br>                }<br>            } else {<br>                if(s.count(dfn[x])) {<br>                    s.erase(dfn[x]);<br>                    if(s.size() != 0) {<br>                        set&lt;int&gt;::iterator it = s.lower_bound(dfn[x]);<br>                        if(it == s.begin() || it == s.end()) {<br>                            u = fdfn[<em>s.begin()];<br>                            v = fdfn[</em>s.rbegin()];<br>                        } else {<br>                            u = fdfn[<em>it]; –it;<br>                            v = fdfn[</em>it];<br>                        }<br>                        ans -= (dist[x] + dist[LCA(u, v)] - dist[LCA(x, u)] - dist[LCA(x, v)]);<br>                    }<br>                }<br>            }<br>            printf(“%d\n”, ans);<br>        }<br>    }<br>    return 0;<br>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LCA/" rel="tag"># LCA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/03/poj2762-going-from-u-to-v-or-from-v-to-u-e5-bc-b1-e8-bf-9e-e9-80-9a-e5-88-a4-e5-ae-9a/" rel="next" title="POJ2762 Going from u to v or from v to u?(弱连通判定)">
+                <i class="fa fa-chevron-left"></i> POJ2762 Going from u to v or from v to u?(弱连通判定)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/05/hdu-5293tree-chain-problem-lca-e6-a0-91-e9-93-be-e5-89-96-e5-88-86-e6-a0-91-e5-bd-a2dp/" rel="prev" title="HDU 5293Tree chain problem (LCA+树链剖分+树形dp)">
+                HDU 5293Tree chain problem (LCA+树链剖分+树形dp) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

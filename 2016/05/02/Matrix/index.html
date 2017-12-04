@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Math," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="转自 http://www.matrix67.com/blog/archives/276 好像目前还没有这方面题目的总结。这几天连续看到四个问这类题目的人，今天在这里简单写一下。这里我们不介绍其它有关矩阵的知识，只介绍矩阵乘法和相关性质。不要以为数学中的矩阵也是黑色屏幕上不断变化的绿色字符。在数学中，一个矩阵说穿了就是">
+<meta name="keywords" content="Math">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[转]十个利用矩阵乘法解决的经典题目">
+<meta property="og:url" content="http://iridescent.com.cn/2016/05/02/Matrix/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="转自 http://www.matrix67.com/blog/archives/276 好像目前还没有这方面题目的总结。这几天连续看到四个问这类题目的人，今天在这里简单写一下。这里我们不介绍其它有关矩阵的知识，只介绍矩阵乘法和相关性质。不要以为数学中的矩阵也是黑色屏幕上不断变化的绿色字符。在数学中，一个矩阵说穿了就是一个二维数组。一个n行m列的矩阵可以乘以一个m行p列的矩阵，得到的结果是一个n行">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708041.gif">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708042.gif">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708043.gif">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708044.gif">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708045.gif">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708046.gif">
+<meta property="og:image" content="http://www.matrix67.com/blogimage/200708047.gif">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.893Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[转]十个利用矩阵乘法解决的经典题目">
+<meta name="twitter:description" content="转自 http://www.matrix67.com/blog/archives/276 好像目前还没有这方面题目的总结。这几天连续看到四个问这类题目的人，今天在这里简单写一下。这里我们不介绍其它有关矩阵的知识，只介绍矩阵乘法和相关性质。不要以为数学中的矩阵也是黑色屏幕上不断变化的绿色字符。在数学中，一个矩阵说穿了就是一个二维数组。一个n行m列的矩阵可以乘以一个m行p列的矩阵，得到的结果是一个n行">
+<meta name="twitter:image" content="http://www.matrix67.com/blogimage/200708041.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/05/02/Matrix/"/>
+
+
+
+
+
+  <title>[转]十个利用矩阵乘法解决的经典题目 | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/05/02/Matrix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[转]十个利用矩阵乘法解决的经典题目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-02T14:49:21+08:00">
+                2016-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转自 <a href="http://www.matrix67.com/blog/archives/276" target="_blank" rel="noopener">http://www.matrix67.com/blog/archives/276</a></p>
+<p>好像目前还没有这方面题目的总结。这几天连续看到四个问这类题目的人，今天在这里简单写一下。这里我们不介绍其它有关矩阵的知识，只介绍矩阵乘法和相关性质。<br>不要以为数学中的矩阵也是黑色屏幕上不断变化的绿色字符。在数学中，一个矩阵说穿了就是一个二维数组。一个n行m列的矩阵可以乘以一个m行p列的矩阵，得到的结果是一个n行p列的矩阵，其中的第i行第j列位置上的数等于前一个矩阵第i行上的m个数与后一个矩阵第j列上的m个数对应相乘后所有m个乘积的和。比如，下面的算式表示一个2行2列的矩阵乘以2行3列的矩阵，其结果是一个2行3列的矩阵。其中，结果的那个4等于2<em>2+0</em>1：<br><img src="http://www.matrix67.com/blogimage/200708041.gif" alt=""><br>下面的算式则是一个1 x 3的矩阵乘以3 x 2的矩阵，得到一个1 x 2的矩阵：<br><img src="http://www.matrix67.com/blogimage/200708042.gif" alt=""></p>
+<p>矩阵乘法的两个重要性质：一，矩阵乘法<strong>不满足</strong>交换律；二，矩阵乘法满足结合律。为什么矩阵乘法不满足交换律呢？废话，交换过来后两个矩阵有可能根本不能相乘。为什么它又满足结合律呢？仔细想想你会发现这也是废话。假设你有三个矩阵A、B、C，那么(AB)C和A(BC)的结果的第i行第j列上的数都等于所有A(ik)<em>B(kl)</em>C(lj)的和（枚举所有的k和l）。</p>
+<p><strong>经典题目1 给定n个点，m个操作，构造O(m+n)的算法输出m个操作后各点的位置。操作有平移、缩放、翻转和旋转</strong><br>这里的操作是对所有点同时进行的。其中翻转是以坐标轴为对称轴进行翻转（两种情况），旋转则以原点为中心。如果对每个点分别进行模拟，那么m个操作总共耗时O(mn)。利用矩阵乘法可以在O(m)的时间里把所有操作合并为一个矩阵，然后每个点与该矩阵相乘即可直接得出最终该点的位置，总共耗时O(m+n)。假设初始时某个点的坐标为x和y，下面5个矩阵可以分别对其进行平移、旋转、翻转和旋转操作。预先把所有m个操作所对应的矩阵全部乘起来，再乘以(x,y,1)，即可一步得出最终点的位置。<br><img src="http://www.matrix67.com/blogimage/200708043.gif" alt=""></p>
+<p><strong>经典题目2 给定矩阵A，请快速计算出A^n（n个A相乘）的结果，输出的每个数都mod p。</strong><br>由于矩阵乘法具有结合律，因此A^4 = A <em> A </em> A <em> A = (A</em>A) <em> (A</em>A) = A^2 <em> A^2。我们可以得到这样的结论：当n为偶数时，A^n = A^(n/2) </em> A^(n/2)；当n为奇数时，A^n = A^(n/2) <em> A^(n/2) </em> A （其中n/2取整）。这就告诉我们，计算A^n也可以使用二分快速求幂的方法。例如，为了算出A^25的值，我们只需要递归地计算出A^12、A^6、A^3的值即可。根据<a href="http://www.matrix67.com/blog/article.asp?id=282" target="_blank" rel="noopener">这里</a>的一些结果，我们可以在计算过程中不断取模，避免高精度运算。</p>
+<p><strong>经典题目3 <a href="http://acm.pku.edu.cn/JudgeOnline/problem?id=3233" target="_blank" rel="noopener">POJ3233</a></strong> (感谢<a href="http://hi.baidu.com/rangemq/blog/item/cd0b9534a57f6ab6d1a2d32b.html" target="_blank" rel="noopener">rmq</a>)<br>题目大意：给定矩阵A，求A + A^2 + A^3 + … + A^k的结果（两个矩阵相加就是对应位置分别相加）。输出的数据mod m。k&lt;=10^9。<br>这道题两次二分，相当经典。首先我们知道，A^i可以二分求出。然后我们需要对整个题目的数据规模k进行二分。比如，当k=6时，有：<br>A + A^2 + A^3 + A^4 + A^5 + A^6 =<u>(A + A^2 + A^3)</u> + A^3*<u>(A + A^2 + A^3)</u><br>应用这个式子后，规模k减小了一半。我们二分求出A^3后再递归地计算A + A^2 + A^3，即可得到原问题的答案。</p>
+<p><strong>经典题目4 <a href="http://www.vijos.cn/Problem_Show.asp?id=1049" target="_blank" rel="noopener">VOJ1049</a></strong><br>题目大意：顺次给出m个置换，反复使用这m个置换对初始序列进行操作，问k次置换后的序列。m&lt;=10, k&lt;2^31。<br>首先将这m个置换“合并”起来（算出这m个置换的乘积），然后接下来我们需要执行这个置换k/m次（取整，若有余数则剩下几步模拟即可）。注意任意一个置换都可以表示成矩阵的形式。例如，将1 2 3 4置换为3 1 2 4，相当于下面的矩阵乘法：<br><img src="http://www.matrix67.com/blogimage/200708044.gif" alt=""><br>置换k/m次就相当于在前面乘以k/m个这样的矩阵。我们可以二分计算出该矩阵的k/m次方，再乘以初始序列即可。做出来了别忙着高兴，得意之时就是你灭亡之日，别忘了最后可能还有几个置换需要模拟。</p>
+<p><strong>经典题目5 《算法艺术与信息学竞赛》207页（2.1代数方法和模型，[例题5]细菌，版次不同可能页码有偏差）</strong><br>大家自己去看看吧，书上讲得很详细。解题方法和上一题类似，都是用矩阵来表示操作，然后二分求最终状态。</p>
+<p><strong>经典题目6 给定n和p，求第n个Fibonacci数mod p的值，n不超过2^31</strong><br>根据前面的一些思路，现在我们需要构造一个2 x 2的矩阵，使得它乘以(a,b)得到的结果是(b,a+b)。每多乘一次这个矩阵，这两个数就会多迭代一次。那么，我们把这个2 x 2的矩阵自乘n次，再乘以(0,1)就可以得到第n个Fibonacci数了。不用多想，这个2 x 2的矩阵很容易构造出来：<br><img src="http://www.matrix67.com/blogimage/200708045.gif" alt=""></p>
+<p><strong>经典题目7 <a href="http://www.vijos.cn/Problem_Show.asp?id=1067" target="_blank" rel="noopener">VOJ1067</a></strong><br>我们可以用上面的方法二分求出任何一个线性递推式的第n项，其对应矩阵的构造方法为：在右上角的(n-1)*(n-1)的小矩阵中的主对角线上填1，矩阵第n行填对应的系数，其它地方都填0。例如，我们可以用下面的矩阵乘法来二分计算f(n) = 4f(n-1) – 3f(n-2) + 2f(n-4)的第k项：<br><img src="http://www.matrix67.com/blogimage/200708046.gif" alt=""><br>利用矩阵乘法求解线性递推关系的题目我能编出一卡车来。这里给出的例题是系数全为1的情况。</p>
+<p><strong>经典题目8 给定一个有向图，问从A点恰好走k步（允许重复经过边）到达B点的方案数mod p的值</strong><br>把给定的图转为邻接矩阵，即A(i,j)=1当且仅当存在一条边i-&gt;j。令C=A<em>A，那么C(i,j)=ΣA(i,k)</em>A(k,j)，实际上就等于从点i到点j恰好经过2条边的路径数（枚举k为中转点）。类似地，C*A的第i行第j列就表示从i到j经过3条边的路径数。同理，如果要求经过k步的路径数，我们只需要二分求出A^k即可。</p>
+<p><strong>经典题目9 用1 x 2的多米诺骨牌填满M x N的矩形有多少种方案，M&lt;=5，N&lt;2^31，输出答案mod p的结果</strong><br><img src="http://www.matrix67.com/blogimage/200708047.gif" alt=""><br>我们以M=3为例进行讲解。假设我们把这个矩形横着放在电脑屏幕上，从右往左一列一列地进行填充。其中前n-2列已经填满了，第n-1列参差不齐。现在我们要做的事情是把第n-1列也填满，将状态转</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Math/" rel="tag"># Math</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/02/poj2976/" rel="next" title="POJ2976 Dropping tests">
+                <i class="fa fa-chevron-left"></i> POJ2976 Dropping tests
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/02/poj-3621-sightseeing-cows/" rel="prev" title="POJ 3621 Sightseeing Cows">
+                POJ 3621 Sightseeing Cows <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

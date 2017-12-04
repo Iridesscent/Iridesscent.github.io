@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Square partition," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Reproduced from: MO’s Algorithm (Query square root decomposition) Once again I found a topic that is useful, interesting but has very less resources online. Bef">
+<meta name="keywords" content="Square partition">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MO’s Algorithm (Query square root decomposition)">
+<meta property="og:url" content="http://iridescent.com.cn/2016/05/12/mos-algorithm-query-square-root-decomposition/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="Reproduced from: MO’s Algorithm (Query square root decomposition) Once again I found a topic that is useful, interesting but has very less resources online. Before writing this I did a small survey an">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://i1.wp.com/blog.anudeep2011.com/wp-includes/images/smilies/simple-smile.png?w=771">
+<meta property="og:image" content="http://i1.wp.com/blog.anudeep2011.com/wp-includes/images/smilies/simple-smile.png?w=771">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.964Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MO’s Algorithm (Query square root decomposition)">
+<meta name="twitter:description" content="Reproduced from: MO’s Algorithm (Query square root decomposition) Once again I found a topic that is useful, interesting but has very less resources online. Before writing this I did a small survey an">
+<meta name="twitter:image" content="http://i1.wp.com/blog.anudeep2011.com/wp-includes/images/smilies/simple-smile.png?w=771">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/05/12/mos-algorithm-query-square-root-decomposition/"/>
+
+
+
+
+
+  <title>MO’s Algorithm (Query square root decomposition) | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/05/12/mos-algorithm-query-square-root-decomposition/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MO’s Algorithm (Query square root decomposition)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-12T18:34:54+08:00">
+                2016-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Reproduced from: <a href="http://blog.anudeep2011.com/mos-algorithm/" target="_blank" rel="noopener">MO’s Algorithm (Query square root decomposition)</a></p>
+<p>Once again I found a topic that is useful, interesting but has very less resources online. Before writing this I did a small survey and surprised that almost none of the Indian programmers knew this algorithm. Its important to learn this, all the red programmers on codeforces use this effectively in div 1 C and D problems. There were not any problems on this an year and half back, but from then there is a spike up! We can expect more problems on this in future contests.</p>
+<p>1) State a problem<br>2) Explain a simple solution which takes O(N^2)<br>3) Slight modification to above algorithm. It still runs in O(N^2)<br>4) Explain an algorithm to solve above problem and state its correctness<br>5) Proof for complexity of above algorithm – O(Sqrt(N) * N)<br>6) Explain where and when we can use above algorithm<br>7) Problems for practice and sample code</p>
+<p><strong>State a problem</strong></p>
+<p>Given an array of size N. All elements of array &lt;= N. You need to answer M queries. Each query is of the form L, R. You need to answer the count of values in range [L, R] which are repeated at least 3 times.<br>Example: Let the array be {1, 2, 3, 1, 1, 2, 1, 2, 3, 1} (zero indexed)<br>Query: L = 0, R = 4. Answer = 1. Values in the range [L, R] = {1, 2, 3, 1, 1} only 1 is repeated at least 3 times.<br>Query: L = 1, R = 8. Answer = 2. Values in the range [L, R] = {2, 3, 1, 1, 2, 1, 2, 3} 1 is repeated 3 times and 2 is repeated 3 times. Number of elements repeated at least 3 times = Answer = 2.<br><span id="more-159"></span><br><strong>Explain a simple solution which takes O(N^2)
+</strong></p>
+<p>For each query, loop from L to R, count the frequency of elements and report the answer. Considering M = N, following runs in O(N^2) in worst case.</p>
+<p><div></div></p>
+<p><div id="highlighter_253665" class="syntaxhighlighter  cpp "></div></p>
+<p><pre class="lang:default decode:true ">for each query:<br>  answer = 0<br>  count[] = 0<br>  for i in {l..r}:<br>    count[array[i]]++<br>    if count[array[i]] == 3:<br>      answer++</pre><br><br><br><strong>Slight modification to above algorithm. It still runs in O(N^2)</strong></p>
+<p><div></div></p>
+<p><div id="highlighter_156100" class="syntaxhighlighter  cpp"></div></p>
+<p><pre class="lang:default decode:true ">add(position):<br>  count[array[position]]++<br>  if count[array[position]] == 3:<br>    answer++</pre></p>
+<p>remove(position):<br>  count[array[position]]–<br>  if count[array[position]] == 2:<br>    answer–</p>
+<p>currentL = 0<br>currentR = 0<br>answer = 0<br>count[] = 0<br>for each query:<br>  // currentL should go to L, currentR should go to R<br>  while currentL &lt; L:<br>    remove(currentL)<br>    currentL++<br>  while currentL &gt; L:<br>    add(currentL)<br>    currentL–<br>  while currentR &lt; R:<br>    add(currentR)<br>    currentR++<br>  while currentR &gt; R:<br>    remove(currentR)<br>    currentR–<br>  output answer<br><br><br>Initially we always looped from L to R, but now we are changing the positions from previous query to adjust to current query.<br>If previous query was L=3, R=10, then we will have currentL=3 and currentR=10 by the end of that query. Now if the next query is L=5, R=7, then we move the currentL to 5 and currentR to 7.<br>add function means we are adding the element at position to our current set. And updating answer accordingly.<br>remove function means we are deleting the element at position from our current set. And updating answer accordingly.</p>
+<p><strong>Explain an algorithm to solve above problem and state its correctness
+</strong></p>
+<p>MO’s algorithm is just an order in which we process the queries. We were given M queries, we will re-order the queries in a particular order and then process them. Clearly, this is an offline algorithm. Each query has L and R, we will call them opening and closing. Let us divide the given input array into Sqrt(N) blocks. Each block will be N / Sqrt(N) = Sqrt(N) size. Each opening has to fall in one of these blocks. Each closing has to fall in one of these blocks.</p>
+<p>A query belongs to P’th block if the opening of that query fall in P’th block. In this algorithm we will process the queries of 1st block. Then we process the queries of 2nd block and so on.. finally Sqrt(N)’th block. We already have an ordering, queries are ordered in the ascending order of its block. There can be many queries that belong to the same block.</p>
+<p>From now, I will ignore about all the blocks and only focus on how we query and answer block 1. We will similarly do for all blocks. All of these queries have their opening in block 1, but their closing can be in any block including block 1. Now let us reorder these queries in ascending order of their R value. We do this for all the blocks.</p>
+<p>How does the final order look like?<br>All the queries are first ordered in ascending order of their block number (block number is the block in which its opening falls). Ties are ordered in ascending order of their R value.<br>For example consider following queries and assume we have 3 blocks each of size 3.<br>{0, 3} {1, 7} {2, 8} {7, 8} {4, 8} {4, 4} {1, 2}<br>Let us re-order them based on their block number.<br>{0, 3} {1, 7} {2, 8} {1, 2} {4, 8} {4, 4} {7, 8}<br>Now let us re-order ties based on their R value.<br>{1, 2} {0, 3} {1, 7} {2, 8} {4, 4} {4, 8} {7, 8}</p>
+<p>Now we use the same code stated in previous section and solve the problem. Above algorithm is correct as we did not do any changes but just reordered the queries.</p>
+<p><strong>Proof for complexity of above algorithm – O(Sqrt(N) * N)
+</strong></p>
+<p>We are done with MO’s algorithm, it is just an ordering. Awesome part is its runtime analysis. It turns out that the O(N^2) code we wrote works in O(Sqrt(N) <em> N) time if we follow the order i specified above. Thats awesome right, with just reordering the queries we reduced the complexity from O(N^2) to O(Sqrt(N) </em> N), and that too with out any further modification to code. Hurray! we will get AC with O(Sqrt(N) * N).</p>
+<p>Have a look at our code above, the complexity over all queries is determined by the 4 while loops. First 2 while loops can be stated as “Amount moved by left pointer in total”, second 2 while loops can be stated as “Amount moved by right pointer”. Sum of these two will be the over all complexity.</p>
+<p>Most important. Let us talk about the right pointer first. For each block, the queries are sorted in increasing order, so clearly the right pointer (currentR) moves in increasing order. During the start of next block the pointer possibly at extreme end will move to least R in next block. That means for a given block, the amount moved by right pointer is O(N). We have O(Sqrt(N)) blocks, so the total is O(N * Sqrt(N)). Great!</p>
+<p>Let us see how the left pointer moves. For each block, the left pointer of all the queries fall in the same block, as we move from query to query the left pointer might move but as previous L and current L fall in the same block, the moment is O(Sqrt(N)) (Size of the block). In each block the amount left pointer movies is O(Q <em> Sqrt(N)) where Q is number of queries falling in that block. Total complexity is O(M </em> Sqrt(N)) for all blocks.</p>
+<p>There you go, total complexity is O( (N + M) <em> Sqrt(N)) = O( N </em> Sqrt(N))</p>
+<p><strong>Explain where and when we can use above algorithm</strong></p>
+<p>As mentioned, this algorithm is offline, that means we cannot use it when we are forced to stick to given order of queries. That also means we cannot use this when there are update operations. Not just that, there is one important possible limitation: We should be able to write the functions add and remove. There will be many cases where add is trivial but remove is not. One such example is where we want maximum in a range. As we add elements, we can keep track of maximum. But when we remove elements it is not trivial. Anyways in that case we can use a set to add elements, remove elements and report minimum. In that case the add and delete operations are O(log N) (Resulting in O(N <em> Sqrt(N) </em> log N) algorithm).</p>
+<p>There are many cases where we can use this algorithm. In few cases we can also use other Data Structures like segment trees, but for few problems using MO’s algorithm is a must. Lets discuss few problems in the next section.</p>
+<p><strong>Problems for practice and sample code</strong></p>
+<p><a href="http://www.spoj.com/problems/DQUERY/" target="_blank" rel="noopener">DQUERY – SPOJ</a>: Number of distinct elements in a range = number of elements with frequency &gt;= 1. So it is the same problem we discussed above.<br><a href="https://github.com/anudeep2011/programming/blob/master/DQUERY.cpp" target="_blank" rel="noopener"><strong>Click here for sample code</strong></a><br><strong>Note</strong>: That code will give TLE on submission, it will give AC if fast I/O is added. Removed fast I/O to keep code clean.<br><a href="http://codeforces.com/contest/86/problem/D" target="_blank" rel="noopener">Powerful array – CF Div1 D</a>: This is an example where MO’s algorithm is a must. I cannot think of any other solution. CF Div1 D means it is a hard problem. See how easy it is using MO’s algorithm in this case. You only need to modify add(), remove() functions in above code.<br><a href="http://www.codechef.com/MARCH14/problems/GERALD07" target="_blank" rel="noopener">GERALD07 – Codechef
+</a><a href="http://codeforces.com/problemset/problem/375/D" target="_blank" rel="noopener">GERALD3 – Codechef
+</a><a href="http://codeforces.com/problemset/problem/375/D" target="_blank" rel="noopener">Tree and Queries – CF Div1 D
+</a><a href="http://www.codechef.com/problems/IITI15" target="_blank" rel="noopener">Powerful Array – CF Div1 D<br>Jeff and Removing Periods – CF Div1 D<br>Sherlock and Inversions – Codechef
+</a></p>
+<p>I am sure there are more problems, if you know any of them, do comment, i will add them.<br>While this algorithm has a special name “MO”, it is just smart square root decomposition.</p>
+<p>Signing off! Wish you a happy new year <img src="http://i1.wp.com/blog.anudeep2011.com/wp-includes/images/smilies/simple-smile.png?w=771" alt=":)"></p>
+<p>Share this post! Learn and let learn <img src="http://i1.wp.com/blog.anudeep2011.com/wp-includes/images/smilies/simple-smile.png?w=771" alt=":)"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Square-partition/" rel="tag"># Square partition</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/05/hdu-5293tree-chain-problem-lca-e6-a0-91-e9-93-be-e5-89-96-e5-88-86-e6-a0-91-e5-bd-a2dp/" rel="next" title="HDU 5293Tree chain problem (LCA+树链剖分+树形dp)">
+                <i class="fa fa-chevron-left"></i> HDU 5293Tree chain problem (LCA+树链剖分+树形dp)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/12/persistent-segment-trees-explained-with-spoj-problems/" rel="prev" title="Persistent segment trees – Explained with spoj problems">
+                Persistent segment trees – Explained with spoj problems <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

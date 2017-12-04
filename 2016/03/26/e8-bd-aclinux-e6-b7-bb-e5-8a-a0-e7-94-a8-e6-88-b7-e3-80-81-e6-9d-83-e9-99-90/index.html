@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Terminal," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="转自：linux 添加用户、权限 # useradd –d /usr/sam -m sam 此命令创建了一个用户sam，其中-d和-m选项用来为登录名sam产生一个主目录/usr/sam（/usr为默认的用户主目录所在的父目录）。 &amp;nbsp; 假设当前用户是sam，则下面的命令修改该用户自己的口令： # pa">
+<meta name="keywords" content="Terminal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[转]linux 添加用户、权限">
+<meta property="og:url" content="http://iridescent.com.cn/2016/03/26/e8-bd-aclinux-e6-b7-bb-e5-8a-a0-e7-94-a8-e6-88-b7-e3-80-81-e6-9d-83-e9-99-90/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="转自：linux 添加用户、权限 # useradd –d /usr/sam -m sam 此命令创建了一个用户sam，其中-d和-m选项用来为登录名sam产生一个主目录/usr/sam（/usr为默认的用户主目录所在的父目录）。 &amp;nbsp; 假设当前用户是sam，则下面的命令修改该用户自己的口令： # passwd Old password:** New password:* Re-enter">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.947Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[转]linux 添加用户、权限">
+<meta name="twitter:description" content="转自：linux 添加用户、权限 # useradd –d /usr/sam -m sam 此命令创建了一个用户sam，其中-d和-m选项用来为登录名sam产生一个主目录/usr/sam（/usr为默认的用户主目录所在的父目录）。 &amp;nbsp; 假设当前用户是sam，则下面的命令修改该用户自己的口令： # passwd Old password:** New password:* Re-enter">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/03/26/e8-bd-aclinux-e6-b7-bb-e5-8a-a0-e7-94-a8-e6-88-b7-e3-80-81-e6-9d-83-e9-99-90/"/>
+
+
+
+
+
+  <title>[转]linux 添加用户、权限 | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/03/26/e8-bd-aclinux-e6-b7-bb-e5-8a-a0-e7-94-a8-e6-88-b7-e3-80-81-e6-9d-83-e9-99-90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[转]linux 添加用户、权限</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-26T20:52:02+08:00">
+                2016-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转自：<a href="http://www.cnblogs.com/daizhuacai/archive/2013/01/17/2865132.html" target="_blank" rel="noopener">linux 添加用户、权限</a></p>
+<p><strong># useradd –d /usr/sam -m sam</strong></p>
+<p>此命令创建了一个用户sam，其中-d和-m选项用来为登录名sam产生一个主目录/usr/sam（/usr为默认的用户主目录所在的父目录）。</p>
+<p>&nbsp;</p>
+<p>假设当前用户是sam，则下面的命令修改该用户自己的口令：</p>
+<p><strong># passwd</strong></p>
+<p>Old password:<strong>**</strong></p>
+<p>New password:<strong><em>*</em></strong></p>
+<p>Re-enter new password:<strong><em>*</em></strong></p>
+<p>&nbsp;</p>
+<p>如果是超级用户，可以用下列形式指定任何用户的口令：</p>
+<p><strong># passwd sam</strong></p>
+<p>New password:<strong><em>*</em></strong></p>
+<p>Re-enter new password:<strong><em>*</em></strong></p>
+<p>&nbsp;</p>
+<p><strong>&gt;&gt;参考1====================================</strong></p>
+<p><strong>1、添加用户</strong></p>
+<p>首先用adduser命令添加一个普通用户，命令如下：</p>
+<p>#adduser tommy  //添加一个名为tommy的用户</p>
+<p>#passwd tommy   //修改密码<br>Changing password for user tommy.<br>New UNIX password:     //在这里输入新密码<br>Retype new UNIX password:  //再次输入新密码<br>passwd: all authentication tokens updated successfully.<br><strong>2、赋予root权限
+</strong>方法一：修改 /etc/sudoers 文件，找到下面一行，把前面的注释（#）去掉</p>
+<h2 id="Allows-people-in-group-wheel-to-run-all-commands"><a href="#Allows-people-in-group-wheel-to-run-all-commands" class="headerlink" title="Allows people in group wheel to run all commands"></a>Allows people in group wheel to run all commands</h2><p>%wheel    ALL=(ALL)    ALL<br>然后修改用户，使其属于root组（wheel），命令如下：</p>
+<p>#usermod -g root tommy<br>修改完毕，现在可以用tommy帐号登录，然后用命令 su - ，即可获得root权限进行操作。<br>方法二：修改 /etc/sudoers 文件，找到下面一行，在root下面添加一行，如下所示：</p>
+<h2 id="Allow-root-to-run-any-commands-anywhere"><a href="#Allow-root-to-run-any-commands-anywhere" class="headerlink" title="Allow root to run any commands anywhere"></a>Allow root to run any commands anywhere</h2><p>root    ALL=(ALL)     ALL<br>tommy   ALL=(ALL)     ALL<br>修改完毕，现在可以用tommy帐号登录，然后用命令 su - ，即可获得root权限进行操作。</p>
+<p>&nbsp;</p>
+<p><table></table></p>
+<p><tbody></tbody></p>
+<p><tr></tr></p>
+<p><td>&nbsp;</td></p>
+<p><strong>&gt;&gt;参考2====================================</strong></p>
+<p><strong>用useradd新增的用户不能直接用ssh远程访问，需要修改ssh相关配置
+</strong>如下：<br>vi /etc/ssh/sshd_config<br>添加</p>
+<p><pre>AllowUsers root@192.168.1.32 admin<br>多个用户用空格隔开</pre><br><br><br><br><br><strong>&gt;&gt;参考3====================================</strong><br><strong>如何让普通用户获得root用户的权限执行操作</strong>而不需要知道root用户的密码或向root用户进行切换呢？有一个命令sudo可以实现这个功能.<br>Sudo的工作流程：<br>（1）root用户编辑/etc/sudoers文件,添加要分配的普通用户记录,其中有这么一行记录：root ALL=(ALL) ALL,在这行后面添加：Sam ALL=(ALL) ALL<br>(2) 那么sam用户在执行操作时,如果所执行的操作自己没有权限,则会去/etc/sudoers文件中查找是否有对应的记录,如果有的话则临时获得root权限,执行只有root才能执行的操作.<br>注意：这里会提示输入密码,但是输入的是sam用户的密码,而不是root用户的密码.例如：<br>Shell&gt; sudo mkdir –p a/b/c/d<br>We trust you have received the usual lecture from the local System<br>Administrator. It usually boils down to these three things:</p>
+<p>#1) Respect the privacy of others.</p>
+<p>#2) Think before you type.</p>
+<p>#3) With great power comes great responsibility.<br>Password: #这里的密码是sam用户自己的密码,而不是root的密码<br>几个操作：<br>1) 编辑/etc/sudoers文件,使用visudo命令,<br>Shell&gt; visudo<br>其实visudo命令也是调用vi去编辑sudoer文件的,但是在保存时会去检查你修改后文件的语法,如果错误是不能保存的,但是如果直接用vi来编辑该文件,强制保存虽然成功,但是如果有语<br>法错误这里并不能给出提示,也就导致了后面sudo命令的不可用.<br>2) 记录解析：<br>Sam ALL=(ALL) ALL<br>使用者帐户 登入的主机=（可以变换的身份） 可以下达的命令<br>上述语句的意思是 sam用户可以在任何地方登录,并可切换成任何用户进行任何操作.这里如果（ALL）不写,只写为 sam ALL=ALL,他默认只能切换为root用户.</p>
+<p>&nbsp;</p>
+<p><strong>&gt;&gt;参考4====================================</strong></p>
+<p><strong>linux chown命令参数及用法详解–改变档案的所有者:</strong></p>
+<p>要更改文件 program.c 的所有者：<strong> chown jim program.c
+</strong>program.c 的用户访问权限现在应用到 jim。作为所有者，jim 可以使用 <a href="http://www.linuxso.com/command/chmod.html" target="_blank" rel="noopener">chmod</a> 命令允许或拒绝其他用户访问 program.c。</p>
+<p>要将目录 /tmp/src 中所有文件的所有者和组更改为用户 john 和组 build：<strong>chown -R john:build /tmp/src</strong></p>
+<p>如: **tomcat的安装目录的所有者修改(#chown -R user:group /usr/java/tomcat5.5)</p>
+<p>**</p>
+<p><strong>&gt;&gt;参考5====================================</strong></p>
+<p>linux下添加，删除，修改，查看用户和用户组</p>
+<p>1，创建组</p>
+<p>groupadd test</p>
+<p>增加一个test组</p>
+<p>2，修改组</p>
+<p>groupmod -n test2 test</p>
+<p>将test组的名子改成test2</p>
+<p>3，删除组</p>
+<p>groupdel test2</p>
+<p>删除 组test2</p>
+<p>4，查看组</p>
+<p>a），查看当前登录用户所在的组 groups，查看apacheuser所在组groups apacheuser</p>
+<p>b），查看所有组 cat /etc/group</p>
+<p>c），有的linux系统没有/etc/group文件的，这个时候看下面的这个方法</p>
+<p>cat /etc/passwd |awk -F [:] ‘{print $4}’ |sort|uniq | getent group |awk -F [:] ‘{print $1}’</p>
+<p>这里用到一个命令是getent,可以通过组ID来查找组信息,如果这个命令没有的话,那就很难查找,系统中所有的组了.</p>
+<p>二，用户操作</p>
+<p>1，增加用户</p>
+<p>查看复制打印?</p>
+<p>[root@krlcgcms01 mytest]# useradd –help</p>
+<p>Usage: useradd [options] LOGIN</p>
+<p>Options:</p>
+<p>-b, –base-dir BASE_DIR       设置基本路径作为用户的登录目录</p>
+<p>-c, –comment COMMENT         对用户的注释</p>
+<p>-d, –home-dir HOME_DIR       设置用户的登录目录</p>
+<p>-D, –defaults                改变设置</p>
+<p>-e, –expiredate EXPIRE_DATE 设置用户的有效期</p>
+<p>-f, –inactive INACTIVE       用户过期后，让密码无效</p>
+<p>-g, –gid GROUP               使用户只属于某个组</p>
+<p>-G, –groups GROUPS           使用户加入某个组</p>
+<p>-h, –help                    帮助</p>
+<p>-k, –skel SKEL_DIR           指定其他的skel目录</p>
+<p>-K, –key KEY=VALUE           覆盖 /etc/login.defs 配置文件</p>
+<p>-m, –create-home             自动创建登录目录</p>
+<p>-l,                           不把用户加入到lastlog文件中</p>
+<p>-M,                           不自动创建登录目录</p>
+<p>-r,                           建立系统账号</p>
+<p>-o, –non-unique              允许用户拥有相同的UID</p>
+<p>-p, –password PASSWORD       为新用户使用加密密码</p>
+<p>-s, –shell SHELL             登录时候的shell</p>
+<p>-u, –uid UID                 为新用户指定一个UID</p>
+<p>-Z, –selinux-user SEUSER     use a specific SEUSER for the SELinux user mapping</p>
+<p>[root@krlcgcms01 mytest]# useradd –help</p>
+<p>Usage: useradd [options] LOGIN</p>
+<p>&nbsp;</p>
+<p>Options:</p>
+<p>-b, –base-dir BASE_DIR       设置基本路径作为用户的登录目录</p>
+<p>-c, –comment COMMENT         对用户的注释</p>
+<p>-d, –home-dir HOME_DIR       设置用户的登录目录</p>
+<p>-D, –defaults                改变设置</p>
+<p>-e, –expiredate EXPIRE_DATE 设置用户的有效期</p>
+<p>-f, –inactive INACTIVE       用户过期后，让密码无效</p>
+<p>-g, –gid GROUP               使用户只属于某个组</p>
+<p>-G, –groups GROUPS           使用户加入某个组</p>
+<p>-h, –help                    帮助</p>
+<p>-k, –skel SKEL_DIR           指定其他的skel目录</p>
+<p>-K, –key KEY=VALUE           覆盖 /etc/login.defs 配置文件</p>
+<p>-m, –create-home             自动创建登录目录</p>
+<p>-l,                           不把用户加入到lastlog文件中</p>
+<p>-M,                           不自动创建登录目录</p>
+<p>-r,                           建立系统账号</p>
+<p>-o, –non-unique              允许用户拥有相同的UID</p>
+<p>-p, –password PASSWORD       为新用户使用加密密码</p>
+<p>-s, –shell SHELL             登录时候的shell</p>
+<p>-u, –uid UID                 为新用户指定一个UID</p>
+<p>-Z, –selinux-user SEUSER     use a specific SEUSER for the SELinux user mappinguseradd test</p>
+<p>&nbsp;</p>
+<p>passwd test</p>
+<p>增加用户test，有一点要注意的，useradd增加一个用户后，不要忘了给他设置密码，不然不能登录的。</p>
+<p>&nbsp;</p>
+<p>2，修改用户</p>
+<p>usermod -d /home/test -G test2 test</p>
+<p>将test用户的登录目录改成/home/test，并加入test2组，注意这里是大G。</p>
+<p>gpasswd -a test test2 将用户test加入到test2组</p>
+<p>gpasswd -d test test2 将用户test从test2组中移出</p>
+<p>&nbsp;</p>
+<p>3，删除用户</p>
+<p>userdel test</p>
+<p>将test用户删除</p>
+<p>&nbsp;</p>
+<p>4，查看用户</p>
+<p>a），查看当前登录用户</p>
+<p>[root@krlcgcms01 ~]# w</p>
+<p>[root@krlcgcms01 ~]# who</p>
+<p>&nbsp;</p>
+<p>b），查看自己的用户名</p>
+<p>[root@krlcgcms01 ~]# whoami</p>
+<p>&nbsp;</p>
+<p>c），查看单个用户信息</p>
+<p>[root@krlcgcms01 ~]# finger apacheuser</p>
+<p>[root@krlcgcms01 ~]# id apacheuser</p>
+<p>&nbsp;</p>
+<p>d），查看用户登录记录</p>
+<p>[root@krlcgcms01 ~]# last 查看登录成功的用户记录</p>
+<p>[root@krlcgcms01 ~]# lastb 查看登录不成功的用户记录</p>
+<p>&nbsp;</p>
+<p>e），查看所有用户</p>
+<p>[root@krlcgcms01 ~]# cut -d : -f 1 /etc/passwd</p>
+<p>[root@krlcgcms01 ~]# cat /etc/passwd |awk -F \: ‘{print $1}’</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Terminal/" rel="tag"># Terminal</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/12/e4-ba-8c-e5-88-86-e5-9b-be-e5-b8-a6-e6-9d-83-e5-8c-b9-e9-85-8d-e5-8f-8akm-e7-ae-97-e6-b3-95/" rel="next" title="二分图带权匹配及KM算法">
+                <i class="fa fa-chevron-left"></i> 二分图带权匹配及KM算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/28/e8-bd-acacm-e5-8d-9a-e5-bc-88-e7-9f-a5-e8-af-86-e6-b1-87-e6-80-bb/" rel="prev" title="[转]ACM博弈知识汇总">
+                [转]ACM博弈知识汇总 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Allows-people-in-group-wheel-to-run-all-commands"><span class="nav-number">1.</span> <span class="nav-text">Allows people in group wheel to run all commands</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Allow-root-to-run-any-commands-anywhere"><span class="nav-number">2.</span> <span class="nav-text">Allow root to run any commands anywhere</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

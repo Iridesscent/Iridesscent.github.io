@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Graph theory,Data structure,LCA,Heavy-Light Decomposition,Dynamic programing(dp)," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="树形dp dp[i]为以i为根节点的权值最大和 维护sum[i]=∑dp[v] (v是i的儿子) 对于每个节点，有两种情况  不加入新链 即dp[u] = sun[u]; 加入以u为LCA的新链 dp[u] = max(dp[u], sum[u]+∑(sum[v] - dp[v])) v是链上的点且u！= v关键就是第">
+<meta name="keywords" content="Graph theory,Data structure,LCA,Heavy-Light Decomposition,Dynamic programing(dp)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDU 5293Tree chain problem (LCA+树链剖分+树形dp)">
+<meta property="og:url" content="http://iridescent.com.cn/2016/05/05/hdu-5293tree-chain-problem-lca-e6-a0-91-e9-93-be-e5-89-96-e5-88-86-e6-a0-91-e5-bd-a2dp/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="树形dp dp[i]为以i为根节点的权值最大和 维护sum[i]=∑dp[v] (v是i的儿子) 对于每个节点，有两种情况  不加入新链 即dp[u] = sun[u]; 加入以u为LCA的新链 dp[u] = max(dp[u], sum[u]+∑(sum[v] - dp[v])) v是链上的点且u！= v关键就是第二种转移方程，方程有了就可以用树链剖分加速dp了  而sum[u]+∑(sum[">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.953Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HDU 5293Tree chain problem (LCA+树链剖分+树形dp)">
+<meta name="twitter:description" content="树形dp dp[i]为以i为根节点的权值最大和 维护sum[i]=∑dp[v] (v是i的儿子) 对于每个节点，有两种情况  不加入新链 即dp[u] = sun[u]; 加入以u为LCA的新链 dp[u] = max(dp[u], sum[u]+∑(sum[v] - dp[v])) v是链上的点且u！= v关键就是第二种转移方程，方程有了就可以用树链剖分加速dp了  而sum[u]+∑(sum[">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/05/05/hdu-5293tree-chain-problem-lca-e6-a0-91-e9-93-be-e5-89-96-e5-88-86-e6-a0-91-e5-bd-a2dp/"/>
+
+
+
+
+
+  <title>HDU 5293Tree chain problem (LCA+树链剖分+树形dp) | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/05/05/hdu-5293tree-chain-problem-lca-e6-a0-91-e9-93-be-e5-89-96-e5-88-86-e6-a0-91-e5-bd-a2dp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HDU 5293Tree chain problem (LCA+树链剖分+树形dp)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-05T15:52:55+08:00">
+                2016-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>树形dp</p>
+<p>dp[i]为以i为根节点的权值最大和</p>
+<p>维护sum[i]=∑dp[v] (v是i的儿子)</p>
+<p>对于每个节点，有两种情况</p>
+<ul>
+<li>不加入新链 即dp[u] = sun[u];</li>
+<li>加入以u为LCA的新链 dp[u] = max(dp[u], sum[u]+∑(sum[v] - dp[v])) v是链上的点且u！= v<br>关键就是第二种转移方程，方程有了就可以用树链剖分加速dp了</li>
+</ul>
+<p>而sum[u]+∑(sum[v] - dp[v])就恰好是和加入链相连的所有点的dp和（不包括加入链上的点），因为每一个sum[v]都在其子节点中被减去了链上的点。</p>
+<p>AC代码，跑了1800ms，姿势一直挺差的。。</p>
+<p><pre class="lang:c++ decode:true">#pragma comment(linker, “/STACK:1024000000,1024000000”)</pre></p>
+<p>#include&lt;cstdio&gt;</p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;cstdlib&gt;</p>
+<p>#include&lt;string&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#define FS first</p>
+<p>#define SE second</p>
+<p>#define lson (o &lt;&lt; 1), L, M</p>
+<p>#define rson ((o &lt;&lt; 1) | 1), M + 1, R</p>
+<p>#define lc (o &lt;&lt; 1)</p>
+<p>#define rc ((o &lt;&lt; 1) | 1)</p>
+<p>using namespace std;<br>const int INF = 0x3f3f3f3f;<br>const int MAXN = 100000 + 10;</p>
+<p>const int DEG = 20;<br>struct Edge {<br>    int to, next;<br>} edge[MAXN &lt;&lt; 1];<br>struct Query {<br>    int u, v, w;<br>    Query(int u, int v, int w) : u(u), v(v), w(w) {}<br>};<br>vector&lt;Query&gt;  q[MAXN];<br>int head[MAXN], tot;<br>int fa[MAXN][DEG];<br>int deg[MAXN];<br>int n, m;<br>int top[MAXN];<br>int num[MAXN];<br>int p[MAXN];<br>int fp[MAXN];<br>int son[MAXN];<br>int pos;<br>int sumv[MAXN &lt;&lt; 2];<br>int dp[MAXN];<br>int sum[MAXN];</p>
+<p>void addedge(int u, int v) {<br>    edge[tot].to = v;<br>    edge[tot].next = head[u];<br>    head[u] = tot++;<br>}</p>
+<p>void init() {<br>    memset(head, -1, sizeof head);<br>    for(int i = 0 ; i &lt;= n ; i++) q[i].clear();<br>    tot = 0;<br>    pos = 1;<br>    memset(son, -1, sizeof son);<br>    memset(sumv, 0, sizeof sumv);<br>}</p>
+<p>void BFS(int root) {<br>    queue&lt;int&gt; Q;<br>    deg[root] = 0;<br>    fa[root][0] = root;<br>    Q.push(root);<br>    while(!Q.empty()) {<br>        int u = Q.front();<br>        Q.pop();<br>        for(int i = 1 ; i &lt; DEG ; i++)<br>            fa[u][i] = fa[fa[u][i - 1]][i - 1];<br>        for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>            int v = edge[i].to;<br>            if(v == fa[u][0]) continue;<br>            fa[v][0] = u;<br>            deg[v] = deg[u] + 1;<br>            Q.push(v);<br>        }<br>    }<br>}<br>int LCA(int u, int v) {<br>    if(deg[u] &gt; deg[v]) swap(u, v);<br>    int hu = deg[u], hv = deg[v];<br>    int tu = u, tv = v;<br>    for(int det = hv - hu, i = 0 ; det ; det &gt;&gt;= 1, i++)<br>        if(det &amp; 1)<br>            tv = fa[tv][i];<br>    if(tu == tv) return tu;<br>    for(int i = DEG - 1 ; i &gt;= 0 ; i–) {<br>        if(fa[tu][i] == fa[tv][i]) continue;<br>        tu = fa[tu][i];<br>        tv = fa[tv][i];<br>    }<br>    return fa[tu][0];<br>}<br>int query(int l, int r, int o, int L, int R) {<br>    if(L &gt;= l &amp;&amp; R &lt;= r) return sumv[o];<br>    int M = L + (R - L) / 2;<br>    int res = 0;<br>    if(l &lt;= M) res += query(l, r, lson);<br>    if(r &gt; M) res += query(l, r, rson);<br>    return res;<br>}<br>void update(int p, int v, int o, int L, int R) {<br>    if(L == R) {<br>        sumv[o] = v;<br>        return;<br>    }<br>    int M = L + (R - L) / 2;<br>    if(p &lt;= M) update(p, v, lson);<br>    else update(p, v, rson);<br>    sumv[o] = sumv[lc] + sumv[rc];<br>}<br>void dfs1(int u, int pre) {<br>    num[u] = 1;<br>    for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>        int v = edge[i].to;<br>        if(v != pre) {<br>            dfs1(v, u);<br>            num[u] += num[v];<br>            if(son[u] == -1 || num[v] &gt; num[son[u]])<br>                son[u] = v;<br>        }<br>    }<br>}<br>void dfs2(int u, int rt) {<br>    top[u] = rt;<br>    p[u] = pos++;<br>    fp[p[u]] = u;<br>    if(son[u] == -1) return;<br>    dfs2(son[u], rt);<br>    for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>        int v = edge[i].to;<br>        if(v != son[u] &amp;&amp; v != fa[u][0])<br>            dfs2(v, v);<br>    }<br>}<br>int Sum(int u, int v) {<br>    int f1 = top[u];<br>    int f2 = top[v];<br>    int res = 0;<br>    while(f1 != f2) {<br>        if(deg[f1] &lt; deg[f2]) {<br>            swap(f1, f2);<br>            swap(u, v);<br>        }<br>        res += query(p[f1], p[u], 1, 1, pos - 1);<br>        u = fa[f1][0];<br>        f1 = top[u];<br>    }<br>    if(u == v) {<br>        res += query(p[u], p[u], 1, 1, pos - 1);<br>        return res;<br>    }<br>    if(deg[u] &gt; deg[v]) swap(u, v);<br>    res += query(p[u], p[v], 1, 1, pos - 1);<br>    return res;<br>}<br>int DP(int u) {<br>    sum[u] = 0;<br>    dp[u] = 0;<br>    for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>        int v = edge[i].to;<br>        if(v == fa[u][0]) continue;<br>        sum[u] += DP(v);<br>    }<br>    dp[u] = sum[u];<br>    for(int i = 0 ; i &lt; (int)q[u].size() ; i++) {<br>        dp[u] = max(dp[u], sum[u] + Sum(u, q[u][i].u) + Sum(u, q[u][i].v) + q[u][i].w);<br>    }<br>    update(p[u], sum[u] - dp[u], 1, 1, pos - 1);<br>    return dp[u];<br>}<br>int main() {<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    while(T–) {<br>        scanf(“%d%d”, &amp;n, &amp;m);<br>        init();<br>        for(int i = 0 ; i &lt; n - 1 ; i++) {<br>            int u, v;<br>            scanf(“%d%d”, &amp;u, &amp;v);<br>            addedge(u, v);<br>            addedge(v, u);<br>        }</p>
+<pre><code>    BFS(1);
+    dfs1(1, 0);
+    dfs2(1, 1);
+    for(int i = 0 ; i &amp;lt; m ; i++) {
+        int u, v, dis;
+        scanf(&quot;%d%d%d&quot;, &amp;amp;u, &amp;amp;v, &amp;amp;dis);
+        q[LCA(u, v)].push_back(Query(u, v, dis));
+    }
+    printf(&quot;%d\n&quot;, DP(1));
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Graph-theory/" rel="tag"># Graph theory</a>
+          
+            <a href="/tags/Data-structure/" rel="tag"># Data structure</a>
+          
+            <a href="/tags/LCA/" rel="tag"># LCA</a>
+          
+            <a href="/tags/Heavy-Light-Decomposition/" rel="tag"># Heavy-Light Decomposition</a>
+          
+            <a href="/tags/Dynamic-programing-dp/" rel="tag"># Dynamic programing(dp)</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/04/hdu5296-annoying-problem-lca/" rel="next" title="HDU5296 Annoying problem LCA">
+                <i class="fa fa-chevron-left"></i> HDU5296 Annoying problem LCA
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/12/mos-algorithm-query-square-root-decomposition/" rel="prev" title="MO’s Algorithm (Query square root decomposition)">
+                MO’s Algorithm (Query square root decomposition) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Dynamic programing," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Orz，，这公式推的太神奇了 题目链接：ZOJ3329 One Person Game 还有一道相似的题目，都需要类似与手动消元的优化。HDU 4089 Activation 题目大意：一次投三枚骰子，每次得分是三个骰子点数之和，如果骰子1的点数为a，骰子b的点数是b，骰子3的点数是c则得分清零，问达到n分以上的期望投">
+<meta name="keywords" content="Dynamic programing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZOJ3329 One Person Game(概率dp)">
+<meta property="og:url" content="http://iridescent.com.cn/2016/03/10/zoj3329-one-person-game-e6-a6-82-e7-8e-87dp/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="Orz，，这公式推的太神奇了 题目链接：ZOJ3329 One Person Game 还有一道相似的题目，都需要类似与手动消元的优化。HDU 4089 Activation 题目大意：一次投三枚骰子，每次得分是三个骰子点数之和，如果骰子1的点数为a，骰子b的点数是b，骰子3的点数是c则得分清零，问达到n分以上的期望投掷次数 解题思路： 明显是概率dp，我们设dp[i]为现在得分为i，达到目标积分">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.990Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ZOJ3329 One Person Game(概率dp)">
+<meta name="twitter:description" content="Orz，，这公式推的太神奇了 题目链接：ZOJ3329 One Person Game 还有一道相似的题目，都需要类似与手动消元的优化。HDU 4089 Activation 题目大意：一次投三枚骰子，每次得分是三个骰子点数之和，如果骰子1的点数为a，骰子b的点数是b，骰子3的点数是c则得分清零，问达到n分以上的期望投掷次数 解题思路： 明显是概率dp，我们设dp[i]为现在得分为i，达到目标积分">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/03/10/zoj3329-one-person-game-e6-a6-82-e7-8e-87dp/"/>
+
+
+
+
+
+  <title>ZOJ3329 One Person Game(概率dp) | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/03/10/zoj3329-one-person-game-e6-a6-82-e7-8e-87dp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ZOJ3329 One Person Game(概率dp)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-10T18:04:01+08:00">
+                2016-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Orz，，这公式推的太神奇了</p>
+<p><strong>题目链接：</strong><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=3329" target="_blank" rel="noopener">ZOJ3329 One Person Game</a></p>
+<p>还有一道相似的题目，都需要类似与手动消元的优化。<a href="http://acm.hdu.edu.cn/showproblem.php?pid=4089" target="_blank" rel="noopener">HDU 4089 Activation</a></p>
+<p><strong>题目大意：</strong>一次投三枚骰子，每次得分是三个骰子点数之和，如果骰子1的点数为a，骰子b的点数是b，骰子3的点数是c则得分清零，问达到n分以上的期望投掷次数</p>
+<p><strong>解题思路：</strong></p>
+<p>明显是概率dp，我们设dp[i]为现在得分为i，达到目标积分还要的分数。可得递推方程</p>
+<p>dp[i] = ∑dp[i+k]<em>p[k] + dp[0] </em>p0+1</p>
+<p>p0是使积分归零的概率</p>
+<p>方程中每个状态的计算都要dp[0]，硬推是不行的。。。</p>
+<p>设dp[i]=A[i]*dp[0]+B[i]</p>
+<p>带入第一个公式得</p>
+<p>dp[i]=∑(A[i+k]<em>dp[0]</em>p[k]+B[i+k]<em>p[k])+dp[0]</em>p[0]+1</p>
+<p>∴dp[i]=(∑(A[i+k]<em>p[k])+p0)</em>dp[0] + ∑(B[i+k]*p[k])+1</p>
+<p>∴A[i]=∑(A[i+k]<em>p[k])+p0    B[i]=∑(B[i+k]</em>p[k])+1</p>
+<p>这样先地推出A[0]和B[0]，dp[0]=B[0]/(1-A[0])</p>
+<p><strong>AC代码：</strong></p>
+<p>写的挺搓的。。。</p>
+<p><pre class="lang:c++ decode:true " title="ZOJ3593 One Person Game">#include &lt;cstdio&gt;</pre></p>
+<p>#include &lt;cstring&gt;</p>
+<p>#include &lt;iostream&gt;</p>
+<p>#include &lt;algorithm&gt;</p>
+<p>#include &lt;cstdlib&gt;</p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;assert.h&gt;</p>
+<p>#include&lt;stack&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#define FS first</p>
+<p>#define SE second</p>
+<p>#define lson (o &lt;&lt; 1), L, M</p>
+<p>#define rson ((o &lt;&lt; 1) | 1), M + 1, R</p>
+<p>#define lc (o &lt;&lt; 1)</p>
+<p>#define rc ((o &lt;&lt; 1) | 1)</p>
+<p>using namespace std;</p>
+<p>typedef long long LL;<br>const int DEG = 20;<br>const double eps = 1e-7;<br>const int MAXN = 500 + 100;</p>
+<p>double A[MAXN], B[MAXN];<br>map&lt;int, double&gt; go;</p>
+<p>int main() {<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    int n, k1, k2, k3, a, b, c;<br>    while(T–) {<br>        scanf(“%d%d%d%d%d%d%d”, &amp;n, &amp;k1, &amp;k2, &amp;k3, &amp;a, &amp;b, &amp;c);<br>        memset(A, 0, sizeof A);<br>        memset(B, 0, sizeof B);<br>        go.clear();<br>        for(int i = 1 ; i &lt;= k1 ; i++)<br>            for(int j = 1 ; j &lt;= k2 ; j++)<br>                for(int k = 1 ; k &lt;= k3 ; k++) {<br>                    go[i + k + j] += (1.0 / k1) <em> (1.0 / k2) </em> (1.0 / k3);<br>                }</p>
+<pre><code>    go[a + b + c] -= (1.0 / k1) * (1.0 / k2) * (1.0 / k3);
+    double p0 = (1.0 / k1) * (1.0 / k2) * (1.0 / k3);
+    for(int i = n ; i &amp;gt;= 0 ; i--) {
+        for(map&amp;lt;int, double&amp;gt;::iterator it = go.begin() ; it != go.end() ; ++it) {
+            A[i] += A[i + it-&amp;gt;FS] * it-&amp;gt;SE;
+            B[i] += B[i + it-&amp;gt;FS] * it-&amp;gt;SE;
+        }
+        A[i] += p0;
+        B[i] += 1;
+    }
+    printf(&quot;%.10f\n&quot;, B[0] / (1 - A[0]));
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dynamic-programing/" rel="tag"># Dynamic programing</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/09/codeforces-466e-information-graph/" rel="next" title="Codeforces 466E Information Graph">
+                <i class="fa fa-chevron-left"></i> Codeforces 466E Information Graph
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/11/[转]二分图多重匹配问题/" rel="prev" title="[转]二分图多重匹配问题">
+                [转]二分图多重匹配问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

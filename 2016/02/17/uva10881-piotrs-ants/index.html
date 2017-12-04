@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="题目链接：UVA10881 - Piotr’s Ants 只要想出两点，这个题就很好解出了  两个蚂蚁相遇在总体上相当于互相穿过 蚂蚁运动的过程中前后相对顺序不会改变这样的话我们就可以通过1算出蚂蚁的终止位置，再通过2确定蚂蚁的id（输入顺序）  详见代码 #include&amp;lt;cstdio&amp;gt; ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UVA10881 - Piotr&#39;s Ants">
+<meta property="og:url" content="http://iridescent.com.cn/2016/02/17/uva10881-piotrs-ants/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="题目链接：UVA10881 - Piotr’s Ants 只要想出两点，这个题就很好解出了  两个蚂蚁相遇在总体上相当于互相穿过 蚂蚁运动的过程中前后相对顺序不会改变这样的话我们就可以通过1算出蚂蚁的终止位置，再通过2确定蚂蚁的id（输入顺序）  详见代码 #include&amp;lt;cstdio&amp;gt; #include&amp;lt;iostream&amp;gt; #include&amp;lt;cstring&amp;gt;">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.978Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UVA10881 - Piotr&#39;s Ants">
+<meta name="twitter:description" content="题目链接：UVA10881 - Piotr’s Ants 只要想出两点，这个题就很好解出了  两个蚂蚁相遇在总体上相当于互相穿过 蚂蚁运动的过程中前后相对顺序不会改变这样的话我们就可以通过1算出蚂蚁的终止位置，再通过2确定蚂蚁的id（输入顺序）  详见代码 #include&amp;lt;cstdio&amp;gt; #include&amp;lt;iostream&amp;gt; #include&amp;lt;cstring&amp;gt;">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/02/17/uva10881-piotrs-ants/"/>
+
+
+
+
+
+  <title>UVA10881 - Piotr's Ants | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/02/17/uva10881-piotrs-ants/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UVA10881 - Piotr's Ants</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-17T15:03:07+08:00">
+                2016-02-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>题目链接：<a href="https://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=456&amp;page=show_problem&amp;problem=1822" target="_blank" rel="noopener">UVA10881 - Piotr’s Ants</a></p>
+<p>只要想出两点，这个题就很好解出了</p>
+<ol>
+<li>两个蚂蚁相遇在总体上相当于互相穿过</li>
+<li>蚂蚁运动的过程中前后相对顺序不会改变<br>这样的话我们就可以通过1算出蚂蚁的终止位置，再通过2确定蚂蚁的id（输入顺序）</li>
+</ol>
+<p>详见代码</p>
+<p><pre class="lang:c++ decode:true " title="UVA10881 - Piotr's Ants">#include&lt;cstdio&gt;</pre></p>
+<p>#include&lt;iostream&gt;</p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;string&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;string&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;cmath&gt;</p>
+<p>#include&lt;cstdlib&gt;</p>
+<p>#define lson (o &lt;&lt; 1), L, M</p>
+<p>#define rson (o &lt;&lt; 1) | 1, M + 1, R</p>
+<p>using namespace std;</p>
+<p>const int INF = 0x3f3f3f3f;<br>const int MAXN = 10000 + 10;<br>const double eps = 1e-7;</p>
+<p>struct Ant {<br>    int id;<br>    int p;<br>    char dir;</p>
+<pre><code>Ant(int id = -1, int p = 0, char dir = 0) : id(id), p(p), dir(dir) {}
+
+bool operator &amp;lt; (const Ant&amp;amp; t) const {
+    return p &amp;lt; t.p;
+}
+</code></pre><p>} ant[MAXN], antend[MAXN];</p>
+<p>int cmp(const Ant&amp; a, const Ant&amp; b) {<br>    return a.id &lt; b.id;<br>}</p>
+<p>int main() {<br>    int L, T, n;<br>    int cases;<br>    scanf(“%d”, &amp;cases);<br>    for(int cnt = 1 ; cnt &lt;= cases ; cnt++) {<br>        scanf(“%d%d%d”, &amp;L, &amp;T, &amp;n);<br>        for(int i = 0 ; i &lt; n ; i++) {<br>            int p;<br>            char dir;<br>            scanf(“%d%*c%c”, &amp;p, &amp;dir);<br>            antend[i] = ant[i] = Ant(i, p, dir);<br>        }</p>
+<pre><code>    for(int i = 0 ; i &amp;lt; n ; i++) {
+        if(antend[i].dir == &apos;L&apos;) antend[i].p -= T;
+        else antend[i].p += T;
+    }
+
+    sort(antend, antend + n);
+    sort(ant, ant + n);
+
+    for(int i = 0 ; i &amp;lt; n ; i++) antend[i].id = ant[i].id;
+
+    if(antend[0].p &amp;lt; 0 || antend[0].p &amp;gt; L) antend[0].dir = &apos;D&apos;;
+    for(int i = 1 ; i &amp;lt; n ; i++) {
+        if(antend[i].p &amp;lt; 0 || antend[i].p &amp;gt; L) antend[i].dir = &apos;D&apos;;
+        else if(antend[i].p == antend[i - 1].p) antend[i].dir = antend[i - 1].dir = &apos;T&apos;;
+    }
+
+    sort(antend, antend + n, cmp);
+
+    printf(&quot;Case #%d:\n&quot;, cnt);
+    for(int i = 0 ; i &amp;lt; n ; i++) {
+        if(antend[i].dir == &apos;D&apos;) printf(&quot;Fell off\n&quot;);
+        else if(antend[i].dir == &apos;T&apos;) printf(&quot;%d Turning\n&quot;, antend[i].p);
+        else printf(&quot;%d %c\n&quot;, antend[i].p, antend[i].dir);
+    }
+    printf(&quot;\n&quot;);
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/09/hdu5572-2015-e5-b9-b4acmicpc-e4-b8-8a-e6-b5-b7-e7-8e-b0-e5-9c-ba-e8-b5-9b1001a/" rel="next" title="HDU5572 2015年ACM/ICPC上海现场赛1001/A">
+                <i class="fa fa-chevron-left"></i> HDU5572 2015年ACM/ICPC上海现场赛1001/A
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/17/uva11464-even-parity/" rel="prev" title="UVA11464 - Even Parity">
+                UVA11464 - Even Parity <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

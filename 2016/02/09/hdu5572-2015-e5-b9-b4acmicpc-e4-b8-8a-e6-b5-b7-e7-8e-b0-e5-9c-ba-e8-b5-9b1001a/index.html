@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Geometry," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="醉了，，现场读错题了，分反弹和不反弹两种情况讨论就好了，加点特判 #include&amp;lt;iostream&amp;gt; #include&amp;lt;cstdio&amp;gt; #include&amp;lt;cstring&amp;gt; #include&amp;lt;queue&amp;gt; #">
+<meta name="keywords" content="Geometry">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDU5572 2015年ACM&#x2F;ICPC上海现场赛1001&#x2F;A">
+<meta property="og:url" content="http://iridescent.com.cn/2016/02/09/hdu5572-2015-e5-b9-b4acmicpc-e4-b8-8a-e6-b5-b7-e7-8e-b0-e5-9c-ba-e8-b5-9b1001a/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="醉了，，现场读错题了，分反弹和不反弹两种情况讨论就好了，加点特判 #include&amp;lt;iostream&amp;gt; #include&amp;lt;cstdio&amp;gt; #include&amp;lt;cstring&amp;gt; #include&amp;lt;queue&amp;gt; #include&amp;lt;map&amp;gt; #include&amp;lt;set&amp;gt; #include&amp;lt;cmath&amp;gt;using namesp">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.958Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HDU5572 2015年ACM&#x2F;ICPC上海现场赛1001&#x2F;A">
+<meta name="twitter:description" content="醉了，，现场读错题了，分反弹和不反弹两种情况讨论就好了，加点特判 #include&amp;lt;iostream&amp;gt; #include&amp;lt;cstdio&amp;gt; #include&amp;lt;cstring&amp;gt; #include&amp;lt;queue&amp;gt; #include&amp;lt;map&amp;gt; #include&amp;lt;set&amp;gt; #include&amp;lt;cmath&amp;gt;using namesp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/02/09/hdu5572-2015-e5-b9-b4acmicpc-e4-b8-8a-e6-b5-b7-e7-8e-b0-e5-9c-ba-e8-b5-9b1001a/"/>
+
+
+
+
+
+  <title>HDU5572 2015年ACM/ICPC上海现场赛1001/A | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/02/09/hdu5572-2015-e5-b9-b4acmicpc-e4-b8-8a-e6-b5-b7-e7-8e-b0-e5-9c-ba-e8-b5-9b1001a/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HDU5572 2015年ACM/ICPC上海现场赛1001/A</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-09T12:51:16+08:00">
+                2016-02-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>醉了，，现场读错题了，分反弹和不反弹两种情况讨论就好了，加点特判</p>
+<p><pre class="lang:c++ decode:true ">#include&lt;iostream&gt;</pre></p>
+<p>#include&lt;cstdio&gt;</p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;cmath&gt;<br>using namespace std;<br>typedef long long LL;<br>const double eps = 1e-8;<br>int sgn(double x) {<br>    if(fabs(x) &lt; eps) return 0;<br>    if(x &lt; 0) return -1;<br>    else return 1;<br>}<br>struct Point {<br>    double x, y;<br>    Point(double x = 0, double y = 0) : x(x), y(y) {}<br>    Point operator - (const Point&amp; t) const {<br>        return Point(x - t.x, y - t.y);<br>    }<br>    double operator ^ (const Point&amp; t) const {<br>        return x <em> t.y - y </em> t.x;<br>    }<br>    double operator <em> (const Point&amp; t) const {<br>        return x </em> t.x + y <em> t.y;<br>    }<br>    Point operator </em> (const double&amp; k) const {<br>        return Point(x <em> k, y </em> k);<br>    }<br>    Point operator / (const double&amp; k) const {<br>        return Point(x / k, y / k);<br>    }<br>    Point operator + (const Point&amp; t) const {<br>        return Point(x + t.x, y + t.y);<br>    }<br>    double distance(Point p) {<br>        return hypot(x - p.x, y - p.y);<br>    }<br>    double len() {<br>        return hypot(x, y);<br>    }<br>    double len2() {<br>        return x <em> x + y </em> y;<br>    }<br>    Point trunc(double r) {<br>        double l = len();<br>        if(!sgn(l)) return <em>this;<br>        r /= l;<br>        return Point(x </em> r, y <em> r);<br>    }<br>};<br>struct Line {<br>    Point s, e;<br>    Line() {}<br>    Line(Point s, Point e) {<br>        this-&gt;s = s; this-&gt;e = e;<br>    }<br>    double length() {<br>        return sqrt((s.x - e.x) </em> (s.x - e.x) + (s.y - e.y) <em> (s.y - e.y));<br>    }<br>    int relation(Point p) {<br>        int c = sgn((p - s) ^ (e - s));<br>        if(c &lt; 0) return 1;<br>        else if(c &gt; 0) return 2;<br>        else return 3;<br>    }<br>    double dispointtoline(Point p) {<br>        return fabs((p - s) ^ (e - s)) / length();<br>    }<br>    double dispointtoseg(Point p) {<br>        if(sgn((p - s) </em> (e - s)) &lt; 0 || sgn((p - e) <em> (s - e)) &lt; 0)<br>            return min(p.distance(s), p.distance(e));<br>        return dispointtoline(p);<br>    }<br>    Point lineprog(Point p) {<br>        return s + (((e - s) </em> ((e - s) <em> (p - s))) / ((e - s).len2()));<br>    }<br>    Point symmetrypoint(Point p) {<br>        Point q = lineprog(p);<br>        return Point(2 </em> q.x - p.x, 2 <em> q.y - p.y);<br>    }<br>};<br>struct Circle {<br>    Point p;<br>    double r;<br>    Circle(double x, double y, double r) {<br>        p  = Point(x, y);<br>        this-&gt;r = r;<br>    }<br>    int relationline(Line v) {<br>        double dst = v.dispointtoline(p);<br>        if(sgn(dst - r) &lt; 0) return 2;<br>        else if(sgn(dst - r) == 0) return 1;<br>        else return 0;<br>    }<br>    int relationseg(Line v) {<br>        double dst = v.dispointtoseg(p);<br>        if(sgn(dst - r) &lt; 0) return 2;<br>        else if(sgn(dst - r) == 0) return 1;<br>        else return 0;<br>    }<br>    int pointcrossline(Line v, Point&amp; p1, Point&amp; p2) {<br>        if(!(</em>this).relationline(v)) return 0;<br>        Point a = v.lineprog(p);<br>        double d = v.dispointtoline(p);<br>        d = sqrt(r <em> r - d </em> d);<br>        if(sgn(d) == 0) {<br>            p1 = a; p2 = a;<br>            return 1;<br>        }<br>        p1 = a + (v.e - v.s).trunc(d);<br>        p2 = a - (v.e - v.s).trunc(d);<br>        return 2;<br>    }<br>};<br>int main() {<br>    int T; scanf(“%d”, &amp;T);<br>    int ca(1);<br>    while(T–) {<br>        int ox, oy, r;<br>        int ax, ay, vx, vy;<br>        int bx, by;<br>        scanf(“%d%d%d”, &amp;ox, &amp;oy, &amp;r);<br>        scanf(“%d%d%d%d”, &amp;ax, &amp;ay, &amp;vx, &amp;vy);<br>        scanf(“%d%d”, &amp;bx, &amp;by);<br>        Line l(Point(ax, ay), Point(ax + vx, ay + vy));<br>        Circle c(ox, oy, r);<br>        Point d(bx, by);<br>        Line t(Point(ax, ay), Point(bx, by));<br>        if(l.relation(d) == 3 &amp;&amp; c.relationseg(t) &lt;= 1 &amp;&amp; sgn(Point(bx - ax, by - ay) ^ Point(vx, vy)) == 0) printf(“Case #%d: Yes\n”, ca++);<br>        else {<br>            Point a, b;<br>            if(c.pointcrossline(l, a, b) != 2) printf(“Case #%d: No\n”, ca++);<br>            else {<br>                Point cut;<br>                if(a.distance(Point(ax, ay)) &gt; b.distance(Point(ax, ay))) cut = b;<br>                else cut = a;<br>                Line mid(cut, c.p);<br>                Point en = mid.symmetrypoint(Point(ax, ay));<br>                Line aft(cut, en);<br>                if(aft.e.distance(d) &gt; aft.s.distance(d)) swap(aft.s, aft.e);<br>                if(sgn((aft.e - aft.s) ^ Point(d.x - cut.x, d.y - cut.y)) == 0) printf(“Case #%d: Yes\n”, ca++);<br>                else printf(“Case #%d: No\n”, ca++);<br>            }<br>        }<br>    }<br>    return 0;<br>}<br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Geometry/" rel="tag"># Geometry</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/09/uva-12118-inspectors-dilemma/" rel="next" title="UVA-12118 Inspector's Dilemma">
+                <i class="fa fa-chevron-left"></i> UVA-12118 Inspector's Dilemma
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/17/uva10881-piotrs-ants/" rel="prev" title="UVA10881 - Piotr's Ants">
+                UVA10881 - Piotr's Ants <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

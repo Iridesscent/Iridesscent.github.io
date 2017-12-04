@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Bipartite graph,Graph theory," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="原文出处：Kuhn-Munkres算法（二分图最大权匹配） 二分图如果是没有权值的，求最大匹配。则是用匈牙利算法求最大匹配。如果带了权值，求最大或者最小权匹配，则必须用KM算法。 其实最大和最小权匹配都是一样的问题。只要会求最大匹配，如果要求最小权匹配，则将权值取相反数，再把结果取相反数，那么最小权匹配就求出来了。 下">
+<meta name="keywords" content="Bipartite graph,Graph theory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二分图带权匹配及KM算法">
+<meta property="og:url" content="http://iridescent.com.cn/2016/03/12/e4-ba-8c-e5-88-86-e5-9b-be-e5-b8-a6-e6-9d-83-e5-8c-b9-e9-85-8d-e5-8f-8akm-e7-ae-97-e6-b3-95/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="原文出处：Kuhn-Munkres算法（二分图最大权匹配） 二分图如果是没有权值的，求最大匹配。则是用匈牙利算法求最大匹配。如果带了权值，求最大或者最小权匹配，则必须用KM算法。 其实最大和最小权匹配都是一样的问题。只要会求最大匹配，如果要求最小权匹配，则将权值取相反数，再把结果取相反数，那么最小权匹配就求出来了。 下面是从网上的博客摘抄的一些零散的总结。。。。。 [二分图带权匹配与最佳匹配] 什">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.936Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二分图带权匹配及KM算法">
+<meta name="twitter:description" content="原文出处：Kuhn-Munkres算法（二分图最大权匹配） 二分图如果是没有权值的，求最大匹配。则是用匈牙利算法求最大匹配。如果带了权值，求最大或者最小权匹配，则必须用KM算法。 其实最大和最小权匹配都是一样的问题。只要会求最大匹配，如果要求最小权匹配，则将权值取相反数，再把结果取相反数，那么最小权匹配就求出来了。 下面是从网上的博客摘抄的一些零散的总结。。。。。 [二分图带权匹配与最佳匹配] 什">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/03/12/e4-ba-8c-e5-88-86-e5-9b-be-e5-b8-a6-e6-9d-83-e5-8c-b9-e9-85-8d-e5-8f-8akm-e7-ae-97-e6-b3-95/"/>
+
+
+
+
+
+  <title>二分图带权匹配及KM算法 | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/03/12/e4-ba-8c-e5-88-86-e5-9b-be-e5-b8-a6-e6-9d-83-e5-8c-b9-e9-85-8d-e5-8f-8akm-e7-ae-97-e6-b3-95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">二分图带权匹配及KM算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-12T14:06:35+08:00">
+                2016-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文出处：<a href="http://www.cnblogs.com/kuangbin/archive/2012/08/19/2646535.html" target="_blank" rel="noopener">Kuhn-Munkres算法（二分图最大权匹配）</a></p>
+<p>二分图如果是没有权值的，求最大匹配。则是用匈牙利算法求最大匹配。如果带了权值，求最大或者最小权匹配，则必须用KM算法。</p>
+<p>其实最大和最小权匹配都是一样的问题。只要会求最大匹配，如果要求最小权匹配，则将权值取相反数，再把结果取相反数，那么最小权匹配就求出来了。</p>
+<p>下面是从网上的博客摘抄的一些零散的总结。。。。。</p>
+<p><strong>[二分图带权匹配与最佳匹配]</strong></p>
+<p>什么是二分图的带权匹配？二分图的带权匹配就是求出一个匹配集合，使得集合中边的权值之和最大或最小。而二分图的最佳匹配则一定为<strong>完备匹配</strong>，在此基础上，才要求匹配的边权值之和最大或最小。二分图的<strong>带权匹配与最佳匹配不等价，也不互相包含</strong>。</p>
+<p>这两个的关系比较悬乎。我的理解就是带权匹配是不考虑是不是完备，只求最大或最小权匹配。而最佳匹配则必须在完备匹配的基础上找最大或最小权匹配。</p>
+<p>这两个还是结合具体题目比较好理解些。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>KM算法是求最大权完备匹配，如果要求最小权完备匹配怎么办？方法很简单，只需将所有的边权值取其相反数，求最大权完备匹配，匹配的值再取相反数即可。</p>
+<p>&nbsp;</p>
+<p>KM算法的运行要求是<strong>必须存在一个完备匹配</strong>，如果求一个最大权匹配(不一定完备)该如何办？依然很简单，把不存在的边权值赋为0。</p>
+<p>&nbsp;</p>
+<p>KM算法求得的最大权匹配是<strong>边权值和</strong>最大，如果我想要<strong>边权之积</strong>最大，又怎样转化？还是不难办到，每条边权取自然对数，然后求最大和权匹配，求得的结果a再算出e^a就是最大积匹配。至于精度问题则没有更好的办法了。</p>
+<p>&nbsp;</p>
+<p>二分图最优匹配：对于二分图的每条边都有一个权（非负），要求一种完备匹配方案，使得所有匹配边的权和最大，记做最优完备匹配。（特殊的，当所有边的权为1时，就是最大完备匹配问题）</p>
+<p>定义     设G＝&lt;V<sub>1</sub>，V<sub>2</sub>，E&gt;为二部图，|V<sub>1</sub>|≤|V<sub>2</sub>|，M为G中一个最大匹配，且|M|＝|V<sub>1</sub>|，则称M为V<sub>1</sub>到V<sub>2</sub>的<strong>完备匹配</strong>。</p>
+<p>在上述定义中，若|V<sub>2</sub>|＝|V<sub>1</sub>|，则完备匹配即为<strong>完美匹配</strong>，若|V<sub>1</sub>|&lt;|V<sub>2</sub>|，则完备匹配为G中最大匹配。</p>
+<p>KM算法是通过给每个顶点一个标号（叫做<strong>顶标</strong>）来把求最大权匹配的问题转化为求完备匹配的问题的。设顶点X<sub>i</sub>的顶标为A[i]，顶点Y<sub>i</sub>的顶标为B[i]，顶点X<sub>i</sub>与Y<sub>j</sub>之间的边权为w[i,j]。在算法执行过程中的任一时刻，对于任一条边(i,j)，A[i]+B[j]&gt;=w[i,j]始终成立，初始A[i]为与xi相连的边的最大边权，B[j]=0。KM算法的正确性基于以下定理：</p>
+<div>设 G(V,E) 为二部图， G’(V,E’) 为二部图的子图。如果对于 G’ 中的任何边&lt;x,y&gt; 满足， L(x)+ L(y)== W<sub>x,y</sub>，我们称 G’(V,E’) 为 G(V,E) 的等价子图或相等子图（是G的生成子图）。</div>
+
+<p><strong>若由二分图中所有满足A[i]+B[j]=w[i,j]的边(i,j)构成的子图（称做<strong>相等子图</strong>）有完备匹配，那么这个完备匹配就是二分图的最大权匹配。</strong></p>
+<p>因为对于二分图的任意一个匹配，如果它包含于相等子图，那么它的边权和等于所有顶点的顶标和；如果它有的边不包含于相等子图，那么它的边权和小于所有顶点的顶标和（即不是最优匹配）。所以相等子图的完备匹配一定是二分图的最大权匹配。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>该算法是通过给每个顶点一个标号（叫做顶标）来把求最大权匹配的问题转化为求完备匹配的问题的。设顶点Xi的顶标为A[ i ]，顶点Yj的顶标为B[ j ]，顶点Xi与Yj之间的边权为w[i,j]。在算法执行过程中的任一时刻，对于任一条边(i,j)，A[ i ]+B[j]&gt;=w[i,j]始终成立。</p>
+<p><div></div><br>KM算法的正确性基于以下定理：</p>
+<p><div></div><br>若由二分图中所有满足A[ i ]+B[j]=w[i,j]的边(i,j)构成的子图（称做相等子图）有完备匹配，那么这个完备匹配就是二分图的最大权匹配。</p>
+<p><div></div><br>首先解释下什么是完备匹配，所谓的完备匹配就是在二部图中，X点集中的所有点都有对应的匹配或者是</p>
+<p><div></div><br>Y点集中所有的点都有对应的匹配，则称该匹配为完备匹配。</p>
+<p><div></div><br>这个定理是显然的。因为对于二分图的任意一个匹配，如果它包含于相等子图，那么它的边权和等于所有顶点的顶标和；如果它有的边不包含于相等子图，那么它的边权和小于所有顶点的顶标和。所以相等子图的完备匹配一定是二分图的最大权匹配。</p>
+<p><div></div><br>初始时为了使A[ i ]+B[j]&gt;=w[i,j]恒成立，令A[ i ]为所有与顶点Xi关联的边的最大权，B[j]=0。如果当前的相等子图没有完备匹配，就按下面的方法修改顶标以使扩大相等子图，直到相等子图具有完备匹配为止。</p>
+<p><div></div><br>我们求当前相等子图的完备匹配失败了，是因为对于某个X顶点，我们找不到一条从它出发的交错路。这时我们获得了一棵交错树，它的叶子结点全部是X顶点。现在我们把交错树中X顶点的顶标全都减小某个值d，Y顶点的顶标全都增加同一个值d，那么我们会发现：</p>
+<p><div></div><br>1）两端都在交错树中的边(i,j)，A[ i ]+B[j]的值没有变化。也就是说，它原来属于相等子图，现在仍属于相等子图。</p>
+<p><div></div><br>2）两端都不在交错树中的边(i,j)，A[ i ]和B[j]都没有变化。也就是说，它原来属于（或不属于）相等子图，现在仍属于（或不属于）相等子图。</p>
+<p><div></div><br>3）X端不在交错树中，Y端在交错树中的边(i,j)，它的A[ i ]+B[j]的值有所增大。它原来不属于相等子图，现在仍不属于相等子图。</p>
+<p><div></div><br>4）X端在交错树中，Y端不在交错树中的边(i,j)，它的A[ i ]+B[j]的值有所减小。也就说，它原来不属于相等子图，现在可能进入了相等子图，因而使相等子图得到了扩大。</p>
+<p><div></div><br>现在的问题就是求d值了。为了使A[ i ]+B[j]&gt;=w[i,j]始终成立，且至少有一条边进入相等子图，d应该等于：</p>
+<p><div></div><br>Min{A[ i ]+B[j]-w[i,j] | Xi在交错树中，Yi不在交错树中}。以上就是KM算法的基本思路。但是朴素的实现方法，时间复杂度为O(n4)——需要找O(n)次增广路，每次增广最多需要修改O(n)次顶标，每次修改顶标时由于要枚举边来求d值，复杂度为O(n2)。实际上KM算法的复杂度是可以做到O(n3)的。我们给每个Y顶点一个“松弛量”函数slack，每次开始找增广路时初始化为无穷大。在寻找增广路的过程中，检查边(i,j)时，如果它不在相等子图中，则让slack[j]变成原值与A[ i ]+B[j]-w[i,j]的较小值。这样，在修改顶标时，取所有不在交错树中的Y顶点的slack值中的最小值作为d值即可。但还要注意一点：修改顶标后，要把所有的不在交错树中的Y顶点的slack值都减去d。</p>
+<p><div></div><br>Kuhn－Munkras算法流程：</p>
+<p><div></div><br>(1)初始化可行顶标的值</p>
+<p><div></div><br>(2)用匈牙利算法寻找完备匹配</p>
+<p><div></div><br>(3)若未找到完备匹配则修改可行顶标的值</p>
+<p><div></div><br>(4)重复(2)(3)直到找到相等子图的完备匹配为止</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>最后还是强调一点：</p>
+<p>KM算法用来解决最大权匹配问题： 在一个二分图内，左顶点为X，右顶点为Y，现对于每组左右连接XiYj有权wij，求一种匹配使得所有wij的和最大。</p>
+<p>也就是最大权匹配一定是完备匹配。如果两边的点数相等则是完美匹配。</p>
+<p>如果点数不相等，其实可以虚拟一些点，使得点数相等，也成为了完美匹配。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Bipartite-graph/" rel="tag"># Bipartite graph</a>
+          
+            <a href="/tags/Graph-theory/" rel="tag"># Graph theory</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/11/[转]二分图多重匹配问题/" rel="next" title="[转]二分图多重匹配问题">
+                <i class="fa fa-chevron-left"></i> [转]二分图多重匹配问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/26/e8-bd-aclinux-e6-b7-bb-e5-8a-a0-e7-94-a8-e6-88-b7-e3-80-81-e6-9d-83-e9-99-90/" rel="prev" title="[转]linux 添加用户、权限">
+                [转]linux 添加用户、权限 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

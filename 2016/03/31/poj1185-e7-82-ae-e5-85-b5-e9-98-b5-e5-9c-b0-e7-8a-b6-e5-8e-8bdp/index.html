@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Dynamic Programming," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="炮兵阵地Time Limit: 2000MSMemory Limit: 65536KTotal Submissions: 23412Accepted: 9056Description司令部的将军们打算在NM的网格地图上部署他们的炮兵部队。一个NM的地图由N行M列组成，地图的每一格可能是山地（用”H” 表示），也可能是平">
+<meta name="keywords" content="Dynamic Programming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="poj1185炮兵阵地(状压dp)">
+<meta property="og:url" content="http://iridescent.com.cn/2016/03/31/poj1185-e7-82-ae-e5-85-b5-e9-98-b5-e5-9c-b0-e7-8a-b6-e5-8e-8bdp/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="炮兵阵地Time Limit: 2000MSMemory Limit: 65536KTotal Submissions: 23412Accepted: 9056Description司令部的将军们打算在NM的网格地图上部署他们的炮兵部队。一个NM的地图由N行M列组成，地图的每一格可能是山地（用”H” 表示），也可能是平原（用”P”表示），如下图。在每一格平原地形上最多可以布置一支炮兵部队（山地上不">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://iridescent.com.cn/wp-content/uploads/2016/03/poj1185.jpg">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.968Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="poj1185炮兵阵地(状压dp)">
+<meta name="twitter:description" content="炮兵阵地Time Limit: 2000MSMemory Limit: 65536KTotal Submissions: 23412Accepted: 9056Description司令部的将军们打算在NM的网格地图上部署他们的炮兵部队。一个NM的地图由N行M列组成，地图的每一格可能是山地（用”H” 表示），也可能是平原（用”P”表示），如下图。在每一格平原地形上最多可以布置一支炮兵部队（山地上不">
+<meta name="twitter:image" content="https://iridescent.com.cn/wp-content/uploads/2016/03/poj1185.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/03/31/poj1185-e7-82-ae-e5-85-b5-e9-98-b5-e5-9c-b0-e7-8a-b6-e5-8e-8bdp/"/>
+
+
+
+
+
+  <title>poj1185炮兵阵地(状压dp) | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/03/31/poj1185-e7-82-ae-e5-85-b5-e9-98-b5-e5-9c-b0-e7-8a-b6-e5-8e-8bdp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">poj1185炮兵阵地(状压dp)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-31T10:26:57+08:00">
+                2016-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <table border="0" width="100%"><br><tbody><br><tr><br><td><br><div class="ptt" lang="en-US">炮兵阵地</div><br><div class="plm"><br><table align="center"><br><tbody><br><tr><br><td><strong>Time Limit:</strong> 2000MS</td><br><td width="10px"></td><br><td><strong>Memory Limit:</strong> 65536K</td><br></tr><br><tr><br><td><strong>Total Submissions:</strong> 23412</td><br><td width="10px"></td><br><td><strong>Accepted:</strong> 9056</td><br></tr><br></tbody><br></table><br></div><br><br>Description<br><br><div class="ptx" lang="en-US">司令部的将军们打算在N<em>M的网格地图上部署他们的炮兵部队。一个N</em>M的地图由N行M列组成，地图的每一格可能是山地（用”H” 表示），也可能是平原（用”P”表示），如下图。在每一格平原地形上最多可以布置一支炮兵部队（山地上不能够部署炮兵部队）；一支炮兵部队在地图上的攻击范围如图中黑色区域所示：</div><br><div class="ptx" lang="en-US"><img src="https://iridescent.com.cn/wp-content/uploads/2016/03/poj1185.jpg" alt="poj1185"><br><center></center><br>如果在地图中的灰色所标识的平原上部署一支炮兵部队，则图中的黑色的网格表示它能够攻击到的区域：沿横向左右各两格，沿纵向上下各两格。图上其它白色网格均攻击不到。从图上可见炮兵的攻击范围不受地形的影响。<br>现在，将军们规划如何部署炮兵部队，在防止误伤的前提下（保证任何两支炮兵部队之间不能互相攻击，即任何一支炮兵部队都不在其他支炮兵部队的攻击范围内），在整个地图区域内最多能够摆放多少我军的炮兵部队。</div><br><br>Input<br><br><div class="ptx" lang="en-US">第一行包含两个由空格分割开的正整数，分别表示N和M；<br>接下来的N行，每一行含有连续的M个字符(‘P’或者’H’)，中间没有空格。按顺序表示地图中每一行的数据。N &lt;= 100；M &lt;= 10。</div><br><br>Output<br><br><div class="ptx" lang="en-US">仅一行，包含一个整数K，表示最多能摆放的炮兵部队的数量。</div><br><br>Sample Input<br><br><pre class="sio">5 4<br>PHPP<br>PPHH<br>PPPP<br>PHPP<br>PHHP</pre><br><br>Sample Output<br><br><pre class="sio">6</pre><br><br>Source<br><br><div class="ptx" lang="en-US"><a href="http://poj.org/searchproblem?field=source&amp;key=Noi+01" target="_blank" rel="noopener">Noi 01</a></div></td><br></tr><br></tbody><br></table>
+
+<p><span style="color: #333399; font-size: medium;">[<a href="http://poj.org/submit?problem_id=1185" target="_blank" rel="noopener">Submit</a>]   [<a>Go Back</a>]   [<a href="http://poj.org/problemstatus?problem_id=1185" target="_blank" rel="noopener">Status</a>]   [<a href="http://poj.org/bbs?problem_id=1185" target="_blank" rel="noopener">Discuss</a>]</span></p>
+<p>打表可发现，对于每一行最多有60种可能，先把所有的可能存到一个mask数组里，dp[i][j][k]表示当前是 第i行，当前行是第j种可能，上一行是第k种可能放的最大值</p>
+<p>则</p>
+<p>dp[l][i][j] = max(dp[l][i][j], dp[j - 1][j][k] + count_bits(mask[i]));</p>
+<p>其中l表示当前行，i, j, k分别表示l行，l - 1行， l - 2行情况，转移条件</p>
+<p>(mask[i] &amp; mask[j]) == 0</p>
+<p>(mask[j] &amp; mask[k]) == 0</p>
+<p>(mask[i] &amp; mask[k]) == 0</p>
+<p>(mask[i] &amp; G[l]) == 0</p>
+<p>(mask[j] &amp; G[l - 1]) == 0</p>
+<p>(mask[k] &amp; G[l - 2]) == 0</p>
+<p>G[i]的第j位如果为1表示第i行第j个空地不能放东西</p>
+<p>AC代码：</p>
+<p><pre class="lang:c++ decode:true " title="poj1185">#include&lt;cstdio&gt;</pre></p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#include&lt;stack&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;iostream&gt;</p>
+<p>#include&lt;iostream&gt;</p>
+<p>#include&lt;assert.h&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;cmath&gt;</p>
+<p>#define lson (o &lt;&lt; 1), L, M</p>
+<p>#define rson (o &lt;&lt; 1) | 1, M + 1, R</p>
+<p>#define PB push_back<br>using namespace std;<br>typedef long long LL;<br>const int MAXN = 11;<br>const double pi = acos(-1.0);<br>const double eps = 1e-7;<br>const int INF = 0x3f3f3f3f;<br>const LL mod = 100000000;</p>
+<p>int dp[110][70][70];<br>int G[110];<br>vector&lt;int&gt; mask;<br>char str[MAXN + 5];</p>
+<p>inline int count_bits(int x){<br>    x = (x &amp; 0x55555555) + ((x &amp; 0xaaaaaaaa) &gt;&gt; 1);<br>    x = (x &amp; 0x33333333) + ((x &amp; 0xcccccccc) &gt;&gt; 2);<br>    x = (x &amp; 0x0f0f0f0f) + ((x &amp; 0xf0f0f0f0) &gt;&gt; 4);<br>    x = (x &amp; 0x00ff00ff) + ((x &amp; 0xff00ff00) &gt;&gt; 8);<br>    x = (x &amp; 0x0000ffff) + ((x &amp; 0xffff0000) &gt;&gt; 16);<br>    return x;<br>}</p>
+<p>bool judge(int mask) {<br>    for(int i = 0 ; i &lt; 11 ; i++)<br>        if(((mask &amp; (1 &lt;&lt; i)) &amp;&amp; (mask &amp; (1 &lt;&lt; (i + 1)))) ||<br>           ((mask &amp; (1 &lt;&lt; i)) &amp;&amp; (mask &amp; (1 &lt;&lt; (i + 2)))) ||<br>           ((mask &amp; (1 &lt;&lt; (i + 1))) &amp;&amp; (mask &amp; (1 &lt;&lt; (i + 2))))<br>           ) return false;<br>    return true;<br>}</p>
+<p>int main() {<br>    //freopen(“in.txt”, “r”, stdin);<br>    int n, m;<br>    while(scanf(“%d%d”, &amp;n, &amp;m) == 2) {<br>        mask.clear();<br>        memset(dp, 0, sizeof dp);<br>        memset(G, 0, sizeof G);<br>        for(int i = 0 ; i &lt; (1 &lt;&lt; m) ; i++)<br>            if(judge(i)) mask.push_back(i);</p>
+<pre><code>    for(int i = 0 ; i &amp;lt; n ; i++) {
+        scanf(&quot;%s&quot;, str);
+        for(int j = 0 ; j &amp;lt; m ; j++)
+            if(str[j] == &apos;H&apos;) G[i] |= (1 &amp;lt;&amp;lt; j);
+    }
+
+    for(int i = 0 ; i &amp;lt; (int)mask.size() ; i++)
+        if(!(G[0] &amp;amp; mask[i]))
+            dp[0][i][0] = count_bits(mask[i]);
+    if(n &amp;gt; 1) {
+        for(int i = 0 ; i &amp;lt; (int)mask.size() ; i++)
+            for(int j = 0 ; j &amp;lt; (int)mask.size() ; j++)
+                if(!(mask[i] &amp;amp; mask[j]) &amp;amp;&amp;amp; !(mask[i] &amp;amp; G[1]) &amp;amp;&amp;amp; !(mask[j] &amp;amp; G[0])) dp[1][i][j] = max(dp[1][i][j], dp[0][j][0] + count_bits(mask[i]));
+    }
+
+    for(int l = 2 ; l &amp;lt; n ; l++) {
+        for(int i = 0 ; i &amp;lt; (int)mask.size() ; i++)
+            for(int j = 0 ; j &amp;lt; (int)mask.size() ; j++)
+                for(int k = 0 ; k &amp;lt; (int)mask.size() ; k++) {
+                    if((mask[i] &amp;amp; mask[j]) || (mask[j] &amp;amp; mask[k]) || (mask[i] &amp;amp; mask[k])) continue;
+                    if((mask[i] &amp;amp; G[l]) || (mask[j] &amp;amp; G[l - 1]) || mask[k] &amp;amp; G[l - 2]) continue;
+                    dp[l][i][j] = max(dp[l][i][j], dp[l - 1][j][k] + count_bits(mask[i]));
+                }
+    }
+
+    int ans = 0;
+    for(int i = 0 ; i &amp;lt; (int)mask.size() ; i++)
+        for(int j = 0 ; j &amp;lt; (int)mask.size() ; j++)
+            ans = max(ans, dp[n - 1][i][j]);
+    printf(&quot;%d\n&quot;, ans);
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dynamic-Programming/" rel="tag"># Dynamic Programming</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/28/e8-bd-acacm-e5-8d-9a-e5-bc-88-e7-9f-a5-e8-af-86-e6-b1-87-e6-80-bb/" rel="next" title="[转]ACM博弈知识汇总">
+                <i class="fa fa-chevron-left"></i> [转]ACM博弈知识汇总
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/26/e5-9b-be-e8-ae-ba-e4-b8-93-e9-a2-98/" rel="prev" title="图论专题">
+                图论专题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

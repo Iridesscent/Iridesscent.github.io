@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Bipartite graph,Graph theory," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="原文出处：二分图多重匹配问题 在二分图最大匹配中，每个点（不管是X方点还是Y方点）最多只能和一条匹配边相关联，然而，我们经常遇到这种问题，即二分图匹配中一个点可以和多条匹配边相关联，但有上限，或者说，Li表示点i最多可以和多少条匹配边相关联。 二分图多重匹配分为二分图多重最大匹配与二分图多重最优匹配两种，分别可以用最大">
+<meta name="keywords" content="Bipartite graph,Graph theory">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[转]二分图多重匹配问题">
+<meta property="og:url" content="http://iridescent.com.cn/2016/03/11/[转]二分图多重匹配问题/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="原文出处：二分图多重匹配问题 在二分图最大匹配中，每个点（不管是X方点还是Y方点）最多只能和一条匹配边相关联，然而，我们经常遇到这种问题，即二分图匹配中一个点可以和多条匹配边相关联，但有上限，或者说，Li表示点i最多可以和多少条匹配边相关联。 二分图多重匹配分为二分图多重最大匹配与二分图多重最优匹配两种，分别可以用最大流与最大费用最大流解决。 （1）二分图多重最大匹配：在原图上建立源点S和汇点T，">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.919Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[转]二分图多重匹配问题">
+<meta name="twitter:description" content="原文出处：二分图多重匹配问题 在二分图最大匹配中，每个点（不管是X方点还是Y方点）最多只能和一条匹配边相关联，然而，我们经常遇到这种问题，即二分图匹配中一个点可以和多条匹配边相关联，但有上限，或者说，Li表示点i最多可以和多少条匹配边相关联。 二分图多重匹配分为二分图多重最大匹配与二分图多重最优匹配两种，分别可以用最大流与最大费用最大流解决。 （1）二分图多重最大匹配：在原图上建立源点S和汇点T，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/03/11/[转]二分图多重匹配问题/"/>
+
+
+
+
+
+  <title>[转]二分图多重匹配问题 | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/03/11/[转]二分图多重匹配问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[转]二分图多重匹配问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-11T19:48:43+08:00">
+                2016-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文出处：<a href="http://www.cppblog.com/MatoNo1/archive/2011/03/26/142766.html" target="_blank" rel="noopener">二分图多重匹配问题</a></p>
+<p>在二分图最大匹配中，每个点（不管是X方点还是Y方点）最多只能和一条匹配边相关联，然而，我们经常遇到这种问题，即二分图匹配中一个点可以和多条匹配边相关联，但有上限，或者说，L<sub>i</sub>表示点i最多可以和多少条匹配边相关联。</p>
+<p>二分图多重匹配分为二分图多重最大匹配与二分图多重最优匹配两种，分别可以用最大流与最大费用最大流解决。</p>
+<p>（1）二分图多重最大匹配：<br>在原图上建立源点S和汇点T，S向每个X方点连一条容量为该X方点L值的边，每个Y方点向T连一条容量为该Y方点L值的边，原来二分图中各边在新的网络中仍存在，容量为1（若该边可以使用多次则容量大于1），求该网络的最大流，就是该二分图多重最大匹配的值。</p>
+<p>（2）二分图多重最优匹配：<br>在原图上建立源点S和汇点T，S向每个X方点连一条容量为该X方点L值、费用为0的边，每个Y方点向T连一条容量为该Y方点L值、费用为0的边，原来二分图中各边在新的网络中仍存在，容量为1（若该边可以使用多次则容量大于1），费用为该边的权值。求该网络的最大费用最大流，就是该二分图多重最优匹配的值。</p>
+<p>例题：<br>【1】POJ1698 Alice’s Chance<br>将电影作为X方点，每一天作为Y方点（最多50周，每周7天，所以共设350个Y方点），若第i个电影可以在第j天搞就连边(i, j)。每个X方点的L值为该电影总共要搞多少天，每个Y方点的L值为1（每天最多只能搞一个电影），然后求二分图多重最大匹配，若能使所有从源点连向X方点的边都满流，则输出Yes，否则输出No。<br>【2】POJ2112 Optimal Milking<br>先预处理求出每两个点（包括挤奶点和牛）间的最短距离，然后将所有挤奶点作为X方点（L值为该挤奶点最多可以容纳多少牛），所有牛作为Y方点（L值为1），X<sub>i</sub>和Y<sub>j</sub>间边的权值为这两个点之间的最短距离（若这两点间不存在路径则此处无边），然后问题就变成了求一个多重匹配，使得每个Y方点都有匹配点且匹配边中权值的最大值最小。<br>可以枚举最大边权值S，然后，原图中所有权值大于S的边都要删去。若此时图中存在符合要求的多重匹配，则S合法否则S不合法。由于S的合法性是单调的，所以可以二分枚举S。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Bipartite-graph/" rel="tag"># Bipartite graph</a>
+          
+            <a href="/tags/Graph-theory/" rel="tag"># Graph theory</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/10/zoj3329-one-person-game-e6-a6-82-e7-8e-87dp/" rel="next" title="ZOJ3329 One Person Game(概率dp)">
+                <i class="fa fa-chevron-left"></i> ZOJ3329 One Person Game(概率dp)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/12/e4-ba-8c-e5-88-86-e5-9b-be-e5-b8-a6-e6-9d-83-e5-8c-b9-e9-85-8d-e5-8f-8akm-e7-ae-97-e6-b3-95/" rel="prev" title="二分图带权匹配及KM算法">
+                二分图带权匹配及KM算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

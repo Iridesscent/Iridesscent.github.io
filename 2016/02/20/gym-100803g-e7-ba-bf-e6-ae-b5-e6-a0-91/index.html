@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Data structure,Interval tree," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="好长时间前做的题，来补一下题解。 给出括号化的序列，每次改变一个括号方向，求出下标p，是的改变p处的括号方向可以使括号化仍然成立，且p最小。 保证括号化看似和线段树没有联系，我们可以把括号”(“表示为1，把括号”)”表示为-1，则保证括号化的充要条件就是使数字序列前缀和始终大于等于零 用线段树维护前缀和 查询有两种情况">
+<meta name="keywords" content="Data structure,Interval tree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gym 100803G 线段树">
+<meta property="og:url" content="http://iridescent.com.cn/2016/02/20/gym-100803g-e7-ba-bf-e6-ae-b5-e6-a0-91/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="好长时间前做的题，来补一下题解。 给出括号化的序列，每次改变一个括号方向，求出下标p，是的改变p处的括号方向可以使括号化仍然成立，且p最小。 保证括号化看似和线段树没有联系，我们可以把括号”(“表示为1，把括号”)”表示为-1，则保证括号化的充要条件就是使数字序列前缀和始终大于等于零 用线段树维护前缀和 查询有两种情况  “(“ 变成 “)”  这种情况我们只需找到最左边的一个”)”，就是答案。(">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.952Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gym 100803G 线段树">
+<meta name="twitter:description" content="好长时间前做的题，来补一下题解。 给出括号化的序列，每次改变一个括号方向，求出下标p，是的改变p处的括号方向可以使括号化仍然成立，且p最小。 保证括号化看似和线段树没有联系，我们可以把括号”(“表示为1，把括号”)”表示为-1，则保证括号化的充要条件就是使数字序列前缀和始终大于等于零 用线段树维护前缀和 查询有两种情况  “(“ 变成 “)”  这种情况我们只需找到最左边的一个”)”，就是答案。(">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/02/20/gym-100803g-e7-ba-bf-e6-ae-b5-e6-a0-91/"/>
+
+
+
+
+
+  <title>Gym 100803G 线段树 | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/02/20/gym-100803g-e7-ba-bf-e6-ae-b5-e6-a0-91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Gym 100803G 线段树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-02-20T22:53:31+08:00">
+                2016-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>好长时间前做的题，来补一下题解。</p>
+<p>给出括号化的序列，每次改变一个括号方向，求出下标p，是的改变p处的括号方向可以使括号化仍然成立，且p最小。</p>
+<p>保证括号化看似和线段树没有联系，我们可以把括号”(“表示为1，把括号”)”表示为-1，则保证括号化的充要条件就是使数字序列前缀和始终大于等于零</p>
+<p>用线段树维护前缀和</p>
+<p>查询有两种情况</p>
+<ul>
+<li>“(“ 变成 “)”  这种情况我们只需找到最左边的一个”)”，就是答案。(可以用一个set维护所有的”)”的位置)</li>
+<li>“)” 变成 “(“ 这种情况我们要找一个最左边的“（”变成”）“，也就是把p处及以后的前缀和都减2，且不能出现负的前缀和。<br>于是我们就要借助线段树查询前缀和小于2的最右边节点，这样把区间[p + 1, n]减二之后才不会出现负值。</li>
+</ul>
+<p>用线段树维护区间最小值，也就是区间最小前缀和。线段树能往右走就往又走，注意查询过程中区间边界的特判处理。</p>
+<p><pre class="lang:c++ decode:true " title="Gym 100803G 线段树">#include&lt;cstdio&gt;</pre></p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;iostream&gt;</p>
+<p>#define lson o &lt;&lt; 1, L, M</p>
+<p>#define rson (o &lt;&lt; 1) | 1, M + 1, R<br>using namespace std;<br>const int MAXN = 300010;<br>const int INF = 0x3f3f3f3f;<br>char str[MAXN];<br>int num[MAXN];<br>int minv[MAXN &lt;&lt; 2];<br>int addv[MAXN &lt;&lt; 2];<br>int len;<br>void pushup(int o, int L, int R) {<br>    minv[o] = 0;<br>    if(R &gt; L) {<br>        minv[o] = min(minv[o &lt;&lt; 1], minv[(o &lt;&lt; 1) | 1]);<br>    }<br>    minv[o] += addv[o];<br>}<br>void update(int p, int v, int o, int L, int R) {<br>    if(p == L &amp;&amp; p == R) {<br>        addv[o] = v;<br>        minv[o] = 0;<br>    } else {<br>        int M = L + (R - L) / 2;<br>        if(p &lt;= M) update(p, v, lson);<br>        else update(p, v, rson);</p>
+<pre><code>}pushup(o, L, R);
+</code></pre><p>}<br>void add(int l, int r, int v, int o, int L, int R) {<br>    if(l &lt;= L &amp;&amp; r &gt;= R) {<br>        addv[o] += v;<br>    } else {<br>        int M = L + (R - L) / 2;<br>        if(l &lt;= M)add(l, r, v, lson);<br>        if(r &gt; M) add(l, r, v, rson);<br>    }<br>    pushup(o, L, R);<br>}<br>int query_min(int l ,int r, int add, int o, int L, int R) {<br>    if(l &lt;= L &amp;&amp; r &gt;= R) {<br>        return minv[o] + add;<br>    } else {<br>        int M = L + (R - L) / 2;<br>        int res = INF;<br>        if(l &lt;= M) res = min(res, query_min(l, r, add + addv[o],lson));<br>        if(r &gt; M) res = min(res, query_min(l, r, add + addv[o], rson));<br>        return res;<br>    }<br>}<br>int query(int l, int r, int add, int o, int L, int R) { //cout &lt;&lt; L &lt;&lt; “!!!” &lt;&lt; R &lt;&lt; endl;<br>    if(L == R) {<br>        if(L == 1) {<br>            if(minv[o] + add &gt;= 2) return 0;<br>            return L;<br>        } else {<br>            return L;<br>        }<br>    }<br>    int M = L + (R - L) / 2;<br>    if(r &lt; M + 1) return query(l, r, add + addv[o], lson);<br>    int minr = query_min(M + 1, min(r, R), 0, 1, 1, len);<br>    if(minr &lt; 2) return query(l, r, add + addv[o], rson);<br>    return query(l, r, add + addv[o], lson);<br>}<br>int main() {<br>    int n, q; set&lt;int&gt; fir;<br>    scanf(“%d%d”, &amp;n, &amp;q);<br>    scanf(“%s”, str + 1);<br>    len = n;<br>    for(int i = 1 ; i &lt;= len ; i++)<br>        if(str[i] == ‘(‘) num[i] = 1;<br>        else {<br>            num[i] = -1;<br>            fir.insert(i);<br>        }<br>    for(int i = 1 ; i &lt;= len ; i++) num[i] += num[i - 1];<br>    for(int i = 1 ; i &lt;= len ; i++) update(i, num[i], 1, 1, len);<br>    //cout &lt;&lt; query_min(1, 1, 0, 1, 1, len) &lt;&lt; “!!” &lt;&lt; endl;<br>    for(int i = 0 ; i &lt; q ; i++) {<br>        //cout &lt;&lt; str + 1 &lt;&lt; endl;<br>        int pos; scanf(“%d”, &amp;pos);<br>        if(str[pos] == ‘(‘) {<br>            str[pos] = ‘)’;<br>            fir.insert(pos);<br>            int pp = *fir.begin();<br>            fir.erase(fir.begin());<br>            add(pos, len, -2, 1, 1, len);<br>            add(pp, len, 2, 1, 1, len);<br>            printf(“%d\n”, pp);<br>            str[pp] = ‘(‘;<br>        } else { // str[pos] == ‘)’<br>            str[pos] = ‘(‘;<br>            add(pos, len, 2, 1, 1, len);<br>            fir.erase(pos);<br>            int pp = query(1, pos, 0, 1, 1, len);<br>            //cout &lt;&lt; pp &lt;&lt; “~~” &lt;&lt; endl;<br>            pp++;<br>            str[pp] = ‘)’;<br>            fir.insert(pp);<br>            add(pp, len, -2, 1, 1, len);<br>            printf(“%d\n”, pp);<br>        }<br>    }<br>    return 0;<br>}<br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-structure/" rel="tag"># Data structure</a>
+          
+            <a href="/tags/Interval-tree/" rel="tag"># Interval tree</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/20/uva1160-x-plosives-ef-bc-88-e5-b9-b6-e6-9f-a5-e9-9b-86-ef-bc-8c-e5-a5-bd-e9-a2-98-ef-bc-89/" rel="next" title="UVA1160 - X-Plosives（并查集，好题）">
+                <i class="fa fa-chevron-left"></i> UVA1160 - X-Plosives（并查集，好题）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/22/e6-90-ad-e5-bb-baonlinejudge/" rel="prev" title="搭建OnlineJudge">
+                搭建OnlineJudge <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

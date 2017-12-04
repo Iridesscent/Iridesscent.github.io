@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Data structure,Persistent data structure," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="去检查询l，r之间有多少数小于等于h #include&amp;lt;cstdio&amp;gt; #include&amp;lt;cstring&amp;gt; #include&amp;lt;algorithm&amp;gt; #include&amp;lt;string&amp;gt; #include&amp;">
+<meta name="keywords" content="Data structure,Persistent data structure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hdu4417 (主席树)2012 ACM&#x2F;ICPC Asia Regional Hangzhou Online">
+<meta property="og:url" content="http://iridescent.com.cn/2016/08/04/hdu4417-e4-b8-bb-e5-b8-ad-e6-a0-912012-acmicpc-asia-regional-hangzhou-online/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="去检查询l，r之间有多少数小于等于h #include&amp;lt;cstdio&amp;gt; #include&amp;lt;cstring&amp;gt; #include&amp;lt;algorithm&amp;gt; #include&amp;lt;string&amp;gt; #include&amp;lt;queue&amp;gt; #include&amp;lt;vector&amp;gt; #include&amp;lt;set&amp;gt; #include&amp;lt;vector&amp;g">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.956Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hdu4417 (主席树)2012 ACM&#x2F;ICPC Asia Regional Hangzhou Online">
+<meta name="twitter:description" content="去检查询l，r之间有多少数小于等于h #include&amp;lt;cstdio&amp;gt; #include&amp;lt;cstring&amp;gt; #include&amp;lt;algorithm&amp;gt; #include&amp;lt;string&amp;gt; #include&amp;lt;queue&amp;gt; #include&amp;lt;vector&amp;gt; #include&amp;lt;set&amp;gt; #include&amp;lt;vector&amp;g">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/08/04/hdu4417-e4-b8-bb-e5-b8-ad-e6-a0-912012-acmicpc-asia-regional-hangzhou-online/"/>
+
+
+
+
+
+  <title>hdu4417 (主席树)2012 ACM/ICPC Asia Regional Hangzhou Online | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/08/04/hdu4417-e4-b8-bb-e5-b8-ad-e6-a0-912012-acmicpc-asia-regional-hangzhou-online/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hdu4417 (主席树)2012 ACM/ICPC Asia Regional Hangzhou Online</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-04T19:33:40+08:00">
+                2016-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>去检查询l，r之间有多少数小于等于h</p>
+<p><pre class="lang:c++ decode:true ">#include&lt;cstdio&gt;</pre></p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;string&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#define FS first</p>
+<p>#define SE second<br>using namespace std;<br>typedef long long LL;<br>typedef pair&lt;int, int&gt; PII;<br>const int MAXN = 100000 + 10;<br>const int M = MAXN * 30;<br>int T[MAXN], lson[M], rson[M], C[M];<br>int tot;<br>int build(int l, int r) {<br>    int root = tot++;<br>    C[root] = 0;<br>    if(l != r) {<br>        int mid = (l + r) &gt;&gt; 1;<br>        lson[root] = build(l, mid);<br>        rson[root] = build(mid + 1, r);<br>    }<br>    return root;<br>}</p>
+<p>int update(int root, int pos, int val, int l, int r) {<br>    int newroot = tot++;<br>    int tmp = newroot;<br>    C[newroot] = C[root] + val;<br>    while(l &lt; r) {<br>        int mid = (l + r) &gt;&gt; 1;<br>        if(pos &lt;= mid) {<br>            lson[newroot] = tot++;<br>            rson[newroot] = rson[root];<br>            newroot = lson[newroot];<br>            root = lson[root];<br>            r = mid;<br>        } else {<br>            rson[newroot] = tot++;<br>            lson[newroot] = lson[root];<br>            newroot = rson[newroot];<br>            root = rson[root];<br>            l = mid + 1;<br>        }<br>        C[newroot] = C[root] + val;<br>    }<br>    return tmp;<br>}</p>
+<p>int a[MAXN];<br>int Hash[MAXN];<br>int cnt;</p>
+<p>int query(int l, int r, int lroot, int rroot, int L, int R) { //printf(“%d %d %d %d\n”, lroot, rroot, L, R);<br>    if(l &gt; r) return 0;<br>    if(L &gt;= l &amp;&amp; R &lt;= r) return C[rroot] - C[lroot];<br>    int M = L + (R - L) / 2;<br>    int res = 0;<br>    if(l &lt;= M) res += query(l, r, lson[lroot], lson[rroot], L, M);<br>    if(r &gt; M) res += query(l, r, rson[lroot], rson[rroot], M + 1, R);<br>    return res;<br>}</p>
+<p>int main() {<br>    int TT;<br>    scanf(“%d”, &amp;TT);<br>    int ca = 1;<br>    while(TT–) {<br>        int n, q;<br>        scanf(“%d%d”, &amp;n, &amp;q);<br>        tot = 0;<br>        cnt = 0;<br>        T[0] = build(1, n);<br>        for(int i = 1 ; i &lt;= n ; i++) {<br>            scanf(“%d”, &amp;a[i]);<br>            Hash[cnt++] = a[i];<br>        }<br>        sort(Hash, Hash + cnt);<br>        cnt = unique(Hash, Hash + cnt) - Hash;<br>        for(int i = 1 ; i &lt;= n ; i++) {<br>            T[i] = update(T[i - 1], lower_bound(Hash, Hash + cnt, a[i]) - Hash + 1, 1, 1, n);<br>        }</p>
+<pre><code>    printf(&quot;Case %d:\n&quot;, ca++);
+    while(q--) {
+        int l, r, h;
+        scanf(&quot;%d%d%d&quot;, &amp;amp;l, &amp;amp;r, &amp;amp;h);
+        l++; r++;
+        if(h &amp;lt; Hash[0]) {
+            printf(&quot;0\n&quot;);
+            continue;
+        }
+        int hh = lower_bound(Hash, Hash + cnt, h) - Hash + 1;
+        if(Hash[hh - 1] != h) hh--;
+        printf(&quot;%d\n&quot;, query(1, hh, T[l - 1], T[r], 1, n));
+    }
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-structure/" rel="tag"># Data structure</a>
+          
+            <a href="/tags/Persistent-data-structure/" rel="tag"># Persistent data structure</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/04/hdu5790-prefix-e5-ad-97-e5-85-b8-e6-a0-91-e4-b8-bb-e5-b8-ad-e6-a0-91-2016-multi-university-training-contest-5/" rel="next" title="HDU5790 Prefix (字典树+主席树) 2016 Multi-University Training Contest 5">
+                <i class="fa fa-chevron-left"></i> HDU5790 Prefix (字典树+主席树) 2016 Multi-University Training Contest 5
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/04/hdu-5709-e4-b8-bb-e5-b8-ad-e6-a0-91/" rel="prev" title="hdu 5709(主席树)">
+                hdu 5709(主席树) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

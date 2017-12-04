@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ICPC/Data structure,Persistent data structure," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="给出一个树，每个点有一种颜色，q个强制在线查询x,d要求输出x的子树中和x的深度差小于等于d的点有多少种颜色 &amp;nbsp; 每个点建立两棵线段树，T1[x]的[l, r]区间和表示x的子树内有多少深度在[l, r]之间的颜色，T2[x]维护x的子树中每种颜色的最小深度 初始每个线段树的初值初始化为一条链，就是对">
+<meta name="keywords" content="ICPC&#x2F;Data structure,Persistent data structure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hdu 5709(主席树)">
+<meta property="og:url" content="http://iridescent.com.cn/2016/08/04/hdu-5709-e4-b8-bb-e5-b8-ad-e6-a0-91/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="给出一个树，每个点有一种颜色，q个强制在线查询x,d要求输出x的子树中和x的深度差小于等于d的点有多少种颜色 &amp;nbsp; 每个点建立两棵线段树，T1[x]的[l, r]区间和表示x的子树内有多少深度在[l, r]之间的颜色，T2[x]维护x的子树中每种颜色的最小深度 初始每个线段树的初值初始化为一条链，就是对应节点的信息，这样自底向上合并线段树，先合并T1，再合并T2，合并T2的时候如果有重复点">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.954Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hdu 5709(主席树)">
+<meta name="twitter:description" content="给出一个树，每个点有一种颜色，q个强制在线查询x,d要求输出x的子树中和x的深度差小于等于d的点有多少种颜色 &amp;nbsp; 每个点建立两棵线段树，T1[x]的[l, r]区间和表示x的子树内有多少深度在[l, r]之间的颜色，T2[x]维护x的子树中每种颜色的最小深度 初始每个线段树的初值初始化为一条链，就是对应节点的信息，这样自底向上合并线段树，先合并T1，再合并T2，合并T2的时候如果有重复点">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/08/04/hdu-5709-e4-b8-bb-e5-b8-ad-e6-a0-91/"/>
+
+
+
+
+
+  <title>hdu 5709(主席树) | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/08/04/hdu-5709-e4-b8-bb-e5-b8-ad-e6-a0-91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hdu 5709(主席树)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-04T22:38:17+08:00">
+                2016-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>给出一个树，每个点有一种颜色，q个强制在线查询x,d要求输出x的子树中和x的深度差小于等于d的点有多少种颜色</p>
+<p>&nbsp;</p>
+<p>每个点建立两棵线段树，T1[x]的[l, r]区间和表示x的子树内有多少深度在[l, r]之间的颜色，T2[x]维护x的子树中每种颜色的最小深度</p>
+<p>初始每个线段树的初值初始化为一条链，就是对应节点的信息，这样自底向上合并线段树，先合并T1，再合并T2，合并T2的时候如果有重复点就在T1中删除深度大的哪一个，并维护深度最小值，这样对于查询x, d就是T1[x] 中区间[d[x], min(n, d[x] + d)]的区间和。</p>
+<p>orz，主席树真是神一样的数据结构。。。</p>
+<p>AC代码：</p>
+<p><pre class="lang:c++ decode:true ">#include&lt;cstdio&gt;</pre></p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;string&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#define FS first</p>
+<p>#define SE second<br>using namespace std;<br>typedef long long LL;<br>typedef pair&lt;int, int&gt; PII;<br>const int MAXN = 100000 + 10;<br>const int M = MAXN * 100;<br>int T1[MAXN], T2[MAXN], lson[M], rson[M], C[M];<br>int tot;</p>
+<p>int update(int root, int pos, int val, int l, int r) {<br>    int newroot = tot++;<br>    int tmp = newroot;<br>    C[newroot] = C[root] + val;<br>    while(l &lt; r) {<br>        int mid = (l + r) &gt;&gt; 1;<br>        if(pos &lt;= mid) {<br>            lson[newroot] = tot++;<br>            rson[newroot] = rson[root];<br>            newroot = lson[newroot];<br>            root = lson[root];<br>            r = mid;<br>        } else {<br>            rson[newroot] = tot++;<br>            lson[newroot] = lson[root];<br>            newroot = rson[newroot];<br>            root = rson[root];<br>            l = mid + 1;<br>        }<br>        C[newroot] = C[root] + val;<br>    }<br>    return tmp;<br>}</p>
+<p>int n, q;</p>
+<p>int merge1(int rt1, int rt2, int l, int r) {<br>    if(rt1 == 0 || rt2 == 0) return rt1 | rt2;<br>    int newroot = tot++;<br>    C[newroot] = C[rt1] + C[rt2];<br>    if(l == r) return newroot;<br>    int mid = (l + r) &gt;&gt; 1;<br>    lson[newroot] = merge1(lson[rt1], lson[rt2], l, mid);<br>    rson[newroot] = merge1(rson[rt1], rson[rt2], mid + 1, r);<br>    return newroot;<br>}</p>
+<p>int merge2(int rt1, int rt2, int l, int r, int p) {<br>    if(rt1 == 0 || rt2 == 0) return rt1 | rt2;<br>    int newroot = tot++;<br>    if(l == r) {<br>        if(C[rt1] &lt; C[rt2]) {<br>            T1[p] = update(T1[p], C[rt2], -1, 1, n);<br>            C[newroot] = C[rt1];<br>        } else {<br>            T1[p] = update(T1[p], C[rt1], -1, 1, n);<br>            C[newroot] = C[rt2];<br>        }<br>        return newroot;<br>    }<br>    int mid = (l + r) &gt;&gt; 1;<br>    lson[newroot] = merge2(lson[rt1], lson[rt2], l, mid, p);<br>    rson[newroot] = merge2(rson[rt1], rson[rt2], mid + 1, r, p);<br>    return newroot;<br>}</p>
+<p>int query(int l, int r, int o, int L, int R) {<br>    if(o == 0) return 0;<br>    if(l &lt;= L &amp;&amp; r &gt;= R) return C[o];</p>
+<pre><code>int M = L + (R - L) / 2;
+int res = 0;
+if(l &amp;lt;= M) res += query(l, r, lson[o], L, M);
+if(r &amp;gt; M) res += query(l, r, rson[o], M + 1, R);
+return res;
+</code></pre><p>};</p>
+<p>int fa[MAXN];<br>int col[MAXN];<br>int d[MAXN];<br>int main() {<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    while(T–) {<br>        scanf(“%d%d”, &amp;n, &amp;q);<br>        fa[1] = 1;<br>        d[1] = 0;<br>        tot = 1;<br>        for(int i = 1 ; i &lt;= n ; i++)<br>            scanf(“%d”, &amp;col[i]);<br>        for(int i = 2 ; i &lt;= n ; i++)<br>            scanf(“%d”, &amp;fa[i]);<br>        for(int i = 1 ; i &lt;= n ; i++) {<br>            d[i] = d[fa[i]] + 1;<br>        }</p>
+<pre><code>    for(int i = 1 ; i &amp;lt;= n ; i++) {
+        T1[i] = update(0, d[i], 1, 1, n);
+        T2[i] = update(0, col[i], d[i], 1, n);
+    }
+
+    for(int i = n ; i &amp;gt;= 1 ; i--) {
+        T1[fa[i]] = merge1(T1[fa[i]], T1[i], 1, n);
+        T2[fa[i]] = merge2(T2[fa[i]], T2[i], 1, n, fa[i]);
+    }
+
+    int last = 0;
+    int dd, x;
+    while(q--) {
+        scanf(&quot;%d%d&quot;, &amp;amp;x, &amp;amp;dd);
+        dd ^= last;
+        x ^= last;
+        printf(&quot;%d\n&quot;, last = query(d[x], min(d[x] + dd, n), T1[x], 1, n));
+    }
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ICPC-Data-structure/" rel="tag"># ICPC/Data structure</a>
+          
+            <a href="/tags/Persistent-data-structure/" rel="tag"># Persistent data structure</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/04/hdu4417-e4-b8-bb-e5-b8-ad-e6-a0-912012-acmicpc-asia-regional-hangzhou-online/" rel="next" title="hdu4417 (主席树)2012 ACM/ICPC Asia Regional Hangzhou Online">
+                <i class="fa fa-chevron-left"></i> hdu4417 (主席树)2012 ACM/ICPC Asia Regional Hangzhou Online
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/08/hdu5803-e6-8c-81-e4-b9-85-e5-8c-96-e5-ad-97-e5-85-b8-e6-a0-91/" rel="prev" title="hdu5803(持久化字典树) 2016 Multi-University Training Contest 6">
+                hdu5803(持久化字典树) 2016 Multi-University Training Contest 6 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

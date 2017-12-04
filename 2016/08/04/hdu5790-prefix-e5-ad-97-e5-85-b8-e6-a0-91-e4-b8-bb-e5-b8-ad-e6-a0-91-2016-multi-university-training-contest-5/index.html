@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Data structure,Persistent data structure," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="HDU5790 传送门 给出n个字符串，q个强制在线查询，每次输出第l~r个字符串有多少不重复的前缀。 将n个字符串依次插入字典树，维护每个前缀最后出现在第几个字符串中 假设当前正在插入第i个字符串中的第j个字符，入股以j结尾的前缀以前没在主席树中出现过，则第i个线段树的第i个位置加1，否则如果上次出现在第k个字符串中">
+<meta name="keywords" content="Data structure,Persistent data structure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDU5790 Prefix (字典树+主席树) 2016 Multi-University Training Contest 5">
+<meta property="og:url" content="http://iridescent.com.cn/2016/08/04/hdu5790-prefix-e5-ad-97-e5-85-b8-e6-a0-91-e4-b8-bb-e5-b8-ad-e6-a0-91-2016-multi-university-training-contest-5/index.html">
+<meta property="og:site_name" content="Donglin&#39;s Blog">
+<meta property="og:description" content="HDU5790 传送门 给出n个字符串，q个强制在线查询，每次输出第l~r个字符串有多少不重复的前缀。 将n个字符串依次插入字典树，维护每个前缀最后出现在第几个字符串中 假设当前正在插入第i个字符串中的第j个字符，入股以j结尾的前缀以前没在主席树中出现过，则第i个线段树的第i个位置加1，否则如果上次出现在第k个字符串中，则第i个线段树k位置减1，第i个位置加1。 这样，第i个线段树维护的就是1~i">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-03T13:26:29.959Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HDU5790 Prefix (字典树+主席树) 2016 Multi-University Training Contest 5">
+<meta name="twitter:description" content="HDU5790 传送门 给出n个字符串，q个强制在线查询，每次输出第l~r个字符串有多少不重复的前缀。 将n个字符串依次插入字典树，维护每个前缀最后出现在第几个字符串中 假设当前正在插入第i个字符串中的第j个字符，入股以j结尾的前缀以前没在主席树中出现过，则第i个线段树的第i个位置加1，否则如果上次出现在第k个字符串中，则第i个线段树k位置减1，第i个位置加1。 这样，第i个线段树维护的就是1~i">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://iridescent.com.cn/2016/08/04/hdu5790-prefix-e5-ad-97-e5-85-b8-e6-a0-91-e4-b8-bb-e5-b8-ad-e6-a0-91-2016-multi-university-training-contest-5/"/>
+
+
+
+
+
+  <title>HDU5790 Prefix (字典树+主席树) 2016 Multi-University Training Contest 5 | Donglin's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Donglin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/08/04/hdu5790-prefix-e5-ad-97-e5-85-b8-e6-a0-91-e4-b8-bb-e5-b8-ad-e6-a0-91-2016-multi-university-training-contest-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HDU5790 Prefix (字典树+主席树) 2016 Multi-University Training Contest 5</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-04T18:57:20+08:00">
+                2016-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://acm.hdu.edu.cn/showproblem.php?pid=5790" target="_blank" rel="noopener">HDU5790 传送门</a></p>
+<p>给出n个字符串，q个强制在线查询，每次输出第l~r个字符串有多少不重复的前缀。</p>
+<p>将n个字符串依次插入字典树，维护每个前缀最后出现在第几个字符串中</p>
+<p>假设当前正在插入第i个字符串中的第j个字符，入股以j结尾的前缀以前没在主席树中出现过，则第i个线段树的第i个位置加1，否则如果上次出现在第k个字符串中，则第i个线段树k位置减1，第i个位置加1。</p>
+<p>这样，第i个线段树维护的就是1~i个字符串每个位置有多少个后缀出现最后一次，这样对于l，r的查询就等于在第r个主席树中求区间和[l, r]。</p>
+<p>AC代码：</p>
+<p><pre class="lang:c++ decode:true ">#include&lt;cstdio&gt;</pre></p>
+<p>#include&lt;cstring&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;string&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;map&gt;</p>
+<p>#define FS first</p>
+<p>#define SE second<br>using namespace std;<br>typedef long long LL;<br>typedef pair&lt;int, int&gt; PII;<br>const int MAXN = 100000 + 10;<br>const int M = MAXN * 60;<br>int T[MAXN], lson[M], rson[M], C[M];<br>int tot;<br>int totTire;<br>int ch[MAXN][26];<br>int last[MAXN];<br>char str[MAXN];</p>
+<p>int build(int l, int r) {<br>    int root = tot++;<br>    C[root] = 0;<br>    if(l != r) {<br>        int mid = (l + r) &gt;&gt; 1;<br>        lson[root] = build(l, mid);<br>        rson[root] = build(mid + 1, r);<br>    }<br>    return root;<br>}</p>
+<p>int update(int root, int pos, int val, int l, int r) {<br>    int newroot = tot++;<br>    int tmp = newroot;<br>    C[newroot] = C[root] + val;<br>    while(l &lt; r) {<br>        int mid = (l + r) &gt;&gt; 1;<br>        if(pos &lt;= mid) {<br>            lson[newroot] = tot++;<br>            rson[newroot] = rson[root];<br>            newroot = lson[newroot];<br>            root = lson[root];<br>            r = mid;<br>        } else {<br>            rson[newroot] = tot++;<br>            lson[newroot] = lson[root];<br>            newroot = rson[newroot];<br>            root = rson[root];<br>            l = mid + 1;<br>        }<br>        C[newroot] = C[root] + val;<br>    }<br>    return tmp;<br>}</p>
+<p>int newnood() {<br>    memset(ch[totTire], 0, sizeof ch[totTire]);<br>    last[totTire] = 0;<br>    return totTire++;<br>}</p>
+<p>void Insert(char s[], int pos, int n) {<br>    int len = strlen(s);<br>    int now = 0;<br>    int preroot = T[pos - 1];<br>    for(int i = 0 ; i &lt; len ; i++) {<br>        int p = s[i] - ‘a’;<br>        if(ch[now][p] == 0) {<br>            ch[now][p] = newnood();<br>            last[ch[now][p]] = pos;<br>            T[pos] = update(preroot, pos, 1, 1, n);<br>            preroot = T[pos];<br>        } else {<br>            T[pos] = update(preroot, last[ch[now][p]], -1, 1, n);<br>            preroot = T[pos];<br>            T[pos] = update(preroot, pos, 1, 1, n);<br>            preroot = T[pos];<br>            last[ch[now][p]] = pos;<br>        }<br>        now = ch[now][p];<br>    }<br>}</p>
+<p>int query(int l, int r, int o, int L, int R) {<br>    if(l &lt;= L &amp;&amp; r &gt;= R) return C[o];</p>
+<pre><code>int M = L + (R - L) / 2;
+int res = 0;
+if(l &amp;lt;= M) res += query(l, r, lson[o], L, M);
+if(r &amp;gt; M) res += query(l, r, rson[o], M + 1, R);
+return res;
+</code></pre><p>}</p>
+<p>int main() {<br>    int n, q;<br>    while(scanf(“%d”, &amp;n) == 1) {<br>        tot = 0;<br>        totTire = 0;<br>        newnood();<br>        T[0] = build(1, n);</p>
+<pre><code>    for(int i = 1 ; i &amp;lt;= n ; i++) {
+        scanf(&quot;%s&quot;, str);
+        Insert(str, i, n);
+    }
+
+    scanf(&quot;%d&quot;, &amp;amp;q);
+    int la = 0;
+    int l, r;
+    while(q--) {
+        scanf(&quot;%d%d&quot;, &amp;amp;l, &amp;amp;r);
+        int ll = min((la+l)%n,(la+r)%n)+1;
+        int rr = max((la+l)%n,(la+r)%n)+1;
+        printf(&quot;%d\n&quot;, la = query(ll, rr, T[rr], 1, n));
+    }
+}
+return 0;
+</code></pre><p>}<br><br>&nbsp;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-structure/" rel="tag"># Data structure</a>
+          
+            <a href="/tags/Persistent-data-structure/" rel="tag"># Persistent data structure</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/06/1099-sharing-chocolate-e7-8a-b6-e5-8e-8bdp/" rel="next" title="1099 - Sharing Chocolate(状压dp)">
+                <i class="fa fa-chevron-left"></i> 1099 - Sharing Chocolate(状压dp)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/04/hdu4417-e4-b8-bb-e5-b8-ad-e6-a0-912012-acmicpc-asia-regional-hangzhou-online/" rel="prev" title="hdu4417 (主席树)2012 ACM/ICPC Asia Regional Hangzhou Online">
+                hdu4417 (主席树)2012 ACM/ICPC Asia Regional Hangzhou Online <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <p class="site-author-name" itemprop="name">Donglin</p>
+            <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Donglin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" href="https://hexo.io">Hexo</a></div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
