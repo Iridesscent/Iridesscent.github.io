@@ -95,18 +95,18 @@
 
 
 
-<meta name="description" content="序言从今年四月份开始，实习有了着落，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。   我用的Redis版本为3.2.9，操作系统为Ubuntu 小白该如何读源码&">
+<meta name="description" content="序言从今年四月份开始，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。   我用的Redis版本为3.2.9，操作系统为Ubuntu 小白（我）该如何读源码Redis">
 <meta name="keywords" content="Redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis源码分析-序言">
 <meta property="og:url" content="http://iridescent.com.cn/2017/08/31/Redis源码分析-目录/index.html">
 <meta property="og:site_name" content="Donglin&#39;s Blog">
-<meta property="og:description" content="序言从今年四月份开始，实习有了着落，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。   我用的Redis版本为3.2.9，操作系统为Ubuntu 小白该如何读源码&amp;amp;如何阅读本文目录Redis是我读的第一个比较大的开源项目，我刚刚开始读源">
+<meta property="og:description" content="序言从今年四月份开始，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。   我用的Redis版本为3.2.9，操作系统为Ubuntu 小白（我）该如何读源码Redis是我读的第一个比较大的开源项目，我刚刚开始读源码的时候，有一种无从下手的感觉（说">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-12-03T13:26:29.911Z">
+<meta property="og:updated_time" content="2017-12-04T14:56:28.338Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis源码分析-序言">
-<meta name="twitter:description" content="序言从今年四月份开始，实习有了着落，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。   我用的Redis版本为3.2.9，操作系统为Ubuntu 小白该如何读源码&amp;amp;如何阅读本文目录Redis是我读的第一个比较大的开源项目，我刚刚开始读源">
+<meta name="twitter:description" content="序言从今年四月份开始，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。   我用的Redis版本为3.2.9，操作系统为Ubuntu 小白（我）该如何读源码Redis是我读的第一个比较大的开源项目，我刚刚开始读源码的时候，有一种无从下手的感觉（说">
 
 
 
@@ -328,9 +328,14 @@
       
 
       
-        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>从今年四月份开始，实习有了着落，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。  </p>
+        <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>从今年四月份开始，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。  </p>
 <p>我用的Redis版本为3.2.9，操作系统为Ubuntu</p>
-<h1 id="小白该如何读源码-amp-如何阅读本文"><a href="#小白该如何读源码-amp-如何阅读本文" class="headerlink" title="小白该如何读源码&amp;如何阅读本文"></a>小白该如何读源码&amp;如何阅读本文</h1><h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><p>Redis是我读的第一个比较大的开源项目，我刚刚开始读源码的时候，有一种无从下手的感觉。最后还是用工具分析了一下代码的依赖关系，顺着依赖关系读下来了。目录的顺序也大致等于我的阅读顺序。<br>读代码之前要对linux系统调用，网络，数据结构算法有一定了解，还有最重要的，要有耐心，坚持下去，共勉～</p>
+<h1 id="小白（我）该如何读源码"><a href="#小白（我）该如何读源码" class="headerlink" title="小白（我）该如何读源码"></a>小白（我）该如何读源码</h1><p>Redis是我读的第一个比较大的开源项目，我刚刚开始读源码的时候，有一种无从下手的感觉（说的和现在没有一样）。我觉得我这种小白看源码的时候对下面几点还是比较注意的。</p>
+<ol>
+<li>基础ok，读代码之前要对linux系统调用，网络，数据结构算法有一定了解，还有最重要的，要有耐心，坚持下去。</li>
+<li>用分析工具分析一下代码依赖关系，顺着依赖关系读。clion中的find usage是神器，有时候一个类一堆字段（比如server），用find usage看一下在源码总的使用，有助于理解。</li>
+<li>源码里一部分是写的基础架构（例如事件驱动库，若干数据类型内存之类的），另一部分是功能实现（事物，pubsub，对其他命令的实现等），建议先看完第一部分再看第二部分。<h1 id="目录（未完待续。。）"><a href="#目录（未完待续。。）" class="headerlink" title="目录（未完待续。。）"></a>目录（未完待续。。）</h1></li>
+</ol>
 <ul>
 <li><ol>
 <li>内存管理</li>
@@ -397,11 +402,47 @@
 </ol>
 </li>
 <li><ol>
-<li>杂项</li>
+<li>Multi</li>
+</ol>
+</li>
+<li><ol>
+<li>rdb&amp;aof</li>
+</ol>
+</li>
+<li><ol>
+<li>pub&amp;sub</li>
+</ol>
+</li>
+<li><ol>
+<li>Background I/O</li>
+</ol>
+</li>
+<li><ol>
+<li>Latency 检测</li>
+</ol>
+</li>
+<li><ol>
+<li>networking</li>
+</ol>
+</li>
+<li><ol>
+<li>notify</li>
+</ol>
+</li>
+<li><ol>
+<li>client</li>
+</ol>
+</li>
+<li><ol>
+<li>Redis运行流程</li>
+</ol>
+</li>
+<li><ol>
+<li>杂项（内置算法，内置regex等）<h1 id="PR"><a href="#PR" class="headerlink" title="PR"></a>PR</h1>如果文中有任何您觉得不正确的/看的不顺眼的/觉得我写的烂的 请随意向<a href="https://github.com/Iridesscent/Blog" target="_blank" rel="noopener">https://github.com/Iridesscent/Blog</a> 这个项目发issue/pull request。<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1>// TODO<h1 id="Copyright"><a href="#Copyright" class="headerlink" title="Copyright"></a>Copyright</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">BSD 3-Clause License</span><br><span class="line"></span><br><span class="line">Copyright (c) 2017, Donglin Zhuang | dongliniris@gmail.com</span><br><span class="line">All rights reserved.</span><br><span class="line"></span><br><span class="line">Redistribution and use in source and binary forms, with or without</span><br><span class="line">modification, are permitted provided that the following conditions are met:</span><br><span class="line"></span><br><span class="line">* Redistributions of source code must retain the above copyright notice, this</span><br><span class="line">  list of conditions and the following disclaimer.</span><br><span class="line"></span><br><span class="line">* Redistributions in binary form must reproduce the above copyright notice,</span><br><span class="line">  this list of conditions and the following disclaimer in the documentation</span><br><span class="line">  and/or other materials provided with the distribution.</span><br><span class="line"></span><br><span class="line">* Neither the name of the copyright holder nor the names of its</span><br><span class="line">  contributors may be used to endorse or promote products derived from</span><br><span class="line">  this software without specific prior written permission.</span><br><span class="line"></span><br><span class="line">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span><br><span class="line">AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span><br><span class="line">IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</span><br><span class="line">DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE</span><br><span class="line">FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL</span><br><span class="line">DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</span><br><span class="line">SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER</span><br><span class="line">CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,</span><br><span class="line">OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</span><br><span class="line">OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 </li>
 </ul>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><h1 id="Copyright"><a href="#Copyright" class="headerlink" title="Copyright"></a>Copyright</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">BSD 3-Clause License</span><br><span class="line"></span><br><span class="line">Copyright (c) 2017, Donglin Zhuang | dongliniris@gmail.com</span><br><span class="line">All rights reserved.</span><br><span class="line"></span><br><span class="line">Redistribution and use in source and binary forms, with or without</span><br><span class="line">modification, are permitted provided that the following conditions are met:</span><br><span class="line"></span><br><span class="line">* Redistributions of source code must retain the above copyright notice, this</span><br><span class="line">  list of conditions and the following disclaimer.</span><br><span class="line"></span><br><span class="line">* Redistributions in binary form must reproduce the above copyright notice,</span><br><span class="line">  this list of conditions and the following disclaimer in the documentation</span><br><span class="line">  and/or other materials provided with the distribution.</span><br><span class="line"></span><br><span class="line">* Neither the name of the copyright holder nor the names of its</span><br><span class="line">  contributors may be used to endorse or promote products derived from</span><br><span class="line">  this software without specific prior written permission.</span><br><span class="line"></span><br><span class="line">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span><br><span class="line">AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span><br><span class="line">IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</span><br><span class="line">DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE</span><br><span class="line">FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL</span><br><span class="line">DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</span><br><span class="line">SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER</span><br><span class="line">CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,</span><br><span class="line">OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</span><br><span class="line">OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span><br></pre></td></tr></table></figure>
 <h1 id="联系我"><a href="#联系我" class="headerlink" title="联系我"></a>联系我</h1><p>Email: dongliniris@gmail.com</p>
 
       
@@ -578,7 +619,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小白该如何读源码-amp-如何阅读本文"><span class="nav-number">2.</span> <span class="nav-text">小白该如何读源码&如何阅读本文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">3.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Copyright"><span class="nav-number">5.</span> <span class="nav-text">Copyright</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#联系我"><span class="nav-number">6.</span> <span class="nav-text">联系我</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序言"><span class="nav-number">1.</span> <span class="nav-text">序言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小白（我）该如何读源码"><span class="nav-number">2.</span> <span class="nav-text">小白（我）该如何读源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录（未完待续。。）"><span class="nav-number">3.</span> <span class="nav-text">目录（未完待续。。）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PR"><span class="nav-number">4.</span> <span class="nav-text">PR</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Copyright"><span class="nav-number">6.</span> <span class="nav-text">Copyright</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#联系我"><span class="nav-number">7.</span> <span class="nav-text">联系我</span></a></li></ol></div>
             
 
           </div>
