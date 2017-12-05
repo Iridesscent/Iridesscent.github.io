@@ -235,6 +235,166 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/05/04/hdu5296-annoying-problem-lca/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/04/hdu5296-annoying-problem-lca/" itemprop="url">HDU5296 Annoying problem LCA</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-04T22:41:43+08:00">
+                2016-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">Algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>题目链接：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=5296" target="_blank" rel="noopener">Annoying problem</a></p>
+<p>很神奇的一道LCA</p>
+<p>先做一个dfs序，以后所有的查询x都可以对应到u，v所在的链到查询点x的权重，对应加减就可以</p>
+<p>u是S中小于u的dfs序的第一个点</p>
+<p>v是S中大于u的dfs序的第一个点</p>
+<p>如果u，v中有一个不存在，就把u，v分别换成dfs序最小和最大的两个点。</p>
+<p>这样处理就非常神奇的完成了所有的题目要求。</p>
+<p>每次影响的权重为dist[x] + dist[LCA(u, v)] - dist[LCA(x, u)] - dist[LCA(x, v)]</p>
+<p>AC代码：</p>
+<p><pre class="lang:c++ decode:true ">#include&lt;iostream&gt;</pre></p>
+<p>#include&lt;stdio.h&gt;</p>
+<p>#include&lt;set&gt;</p>
+<p>#include&lt;algorithm&gt;</p>
+<p>#include&lt;cmath&gt;</p>
+<p>#include&lt;vector&gt;</p>
+<p>#include&lt;queue&gt;</p>
+<p>#include&lt;ctime&gt;</p>
+<p>#include&lt;cstring&gt;<br>using namespace std;</p>
+<p>typedef long long LL;<br>const int MAXN = 100000 + 10;<br>const int DEG = 20;<br>struct Edge {<br>    int to, next;<br>    int dis;<br>} edge[MAXN &lt;&lt; 1];<br>int head[MAXN], tot;<br>void addedge(int u, int v, int dis) {<br>    edge[tot].to = v;<br>    edge[tot].next = head[u];<br>    edge[tot].dis = dis;<br>    head[u] = tot++;<br>}<br>void init() {<br>    memset(head, -1, sizeof head);<br>    tot = 0;<br>}<br>int fa[MAXN][DEG];<br>int deg[MAXN];<br>int dist[MAXN];<br>void BFS(int root) {<br>    queue&lt;int&gt; Q;<br>    deg[root] = 0;<br>    fa[root][0] = root;<br>    Q.push(root);<br>    while(!Q.empty()) {<br>        int u = Q.front();<br>        Q.pop();<br>        for(int i = 1 ; i &lt; DEG ; i++)<br>            fa[u][i] = fa[fa[u][i - 1]][i - 1];<br>        for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>            int v = edge[i].to;<br>            if(v == fa[u][0]) continue;<br>            fa[v][0] = u;<br>            deg[v] = deg[u] + 1;<br>            Q.push(v);<br>        }<br>    }<br>}<br>int LCA(int u, int v) {<br>    if(deg[u] &gt; deg[v]) swap(u, v);<br>    int hu = deg[u], hv = deg[v];<br>    int tu = u, tv = v;<br>    for(int det = hv - hu, i = 0 ; det ; det &gt;&gt;= 1, i++)<br>        if(det &amp; 1)<br>            tv = fa[tv][i];<br>    if(tu == tv) return tu;<br>    for(int i = DEG - 1 ; i &gt;= 0 ; i–) {<br>        if(fa[tu][i] == fa[tv][i]) continue;<br>        tu = fa[tu][i];<br>        tv = fa[tv][i];<br>    }<br>    return fa[tu][0];<br>}<br>int dfn[MAXN];<br>int fdfn[MAXN];<br>int pos;<br>void dfs(int u, int fa) {<br>    dfn[u] = pos++;<br>    fdfn[dfn[u]] = u;<br>    for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>        int v = edge[i].to;<br>        if(v != fa) {<br>            dist[v] = dist[u] + edge[i].dis;<br>            dfs(v, u);<br>        }<br>    }<br>}<br>int main() {<br>    int ca = 1;<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    while(T–) {<br>        int n, q;<br>        scanf(“%d%d”, &amp;n, &amp;q);<br>        init();<br>        int u, v, dis;<br>        for(int i = 0 ; i &lt; n - 1 ; i++) {<br>            scanf(“%d%d%d”, &amp;u, &amp;v, &amp;dis);<br>            addedge(u, v, dis);<br>            addedge(v, u, dis);<br>        }<br>        BFS(1);<br>        pos = 1;<br>        memset(dist, 0, sizeof dist);<br>        dfs(1, -1);<br>        int ans = 0;<br>        set&lt;int&gt; s;<br>        printf(“Case #%d:\n”, ca++);<br>        while(q–) {<br>            int op, x;<br>            scanf(“%d%d”, &amp;op, &amp;x);<br>            if(op == 1) {<br>                if(s.size() == 0) {<br>                    s.insert(dfn[x]);<br>                }<br>                else if(!s.count(dfn[x])) {<br>                    set&lt;int&gt;::iterator it = s.lower_bound(dfn[x]);<br>                    if(it == s.begin() || it == s.end()) {<br>                        u = fdfn[<em>s.begin()];<br>                        v = fdfn[</em>s.rbegin()];<br>                    } else {<br>                        u = fdfn[<em>it]; –it;<br>                        v = fdfn[</em>it];<br>                    }<br>                    s.insert(dfn[x]);<br>                    ans += (dist[x] + dist[LCA(u, v)] - dist[LCA(x, u)] - dist[LCA(x, v)]);<br>                }<br>            } else {<br>                if(s.count(dfn[x])) {<br>                    s.erase(dfn[x]);<br>                    if(s.size() != 0) {<br>                        set&lt;int&gt;::iterator it = s.lower_bound(dfn[x]);<br>                        if(it == s.begin() || it == s.end()) {<br>                            u = fdfn[<em>s.begin()];<br>                            v = fdfn[</em>s.rbegin()];<br>                        } else {<br>                            u = fdfn[<em>it]; –it;<br>                            v = fdfn[</em>it];<br>                        }<br>                        ans -= (dist[x] + dist[LCA(u, v)] - dist[LCA(x, u)] - dist[LCA(x, v)]);<br>                    }<br>                }<br>            }<br>            printf(“%d\n”, ans);<br>        }<br>    }<br>    return 0;<br>}<br><br>&nbsp;</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/05/03/poj2762-going-from-u-to-v-or-from-v-to-u-e5-bc-b1-e8-bf-9e-e9-80-9a-e5-88-a4-e5-ae-9a/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1661,225 +1821,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/04/26/e5-9b-be-e8-ae-ba-e4-b8-93-e9-a2-98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Donglin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Donglin's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/26/e5-9b-be-e8-ae-ba-e4-b8-93-e9-a2-98/" itemprop="url">图论专题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-26T16:46:14+08:00">
-                2016-04-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Algorithm/" itemprop="url" rel="index">
-                    <span itemprop="name">Algorithm</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>准被完整的刷一遍图论，包括巩固基础知识，更注重运用技巧和提升难度，包括但不限于最短路，2SAT，网络流，匹配，相应的和搜索，dp的结合。有经典模型，也要注重新题的灵活运用。</p>
-<p>&nbsp;</p>
-<p>1.<a href="http://poj.org/problem?id=2449" target="_blank" rel="noopener">poj2449 Remmarguts’ Date第k短路+A*</a></p>
-<p>有个小坑，当s等于t的时候，最短路不是0，而是绕一下再回来的最短路。</p>
-<p><pre class="lang:c++ decode:true">#include&lt;vector&gt;</pre></p>
-<p>#include&lt;queue&gt;</p>
-<p>#include&lt;algorithm&gt;</p>
-<p>#include&lt;map&gt;</p>
-<p>#include&lt;string&gt;</p>
-<p>#include&lt;cstring&gt;</p>
-<p>#include&lt;cmath&gt;</p>
-<p>#include&lt;cstdlib&gt;</p>
-<p>#include&lt;cstdio&gt;</p>
-<p>using namespace std;</p>
-<p>const int MAXN = 1000 + 10;<br>const int MAXM = 100000 + 10;<br>const double eps = 1e-7;<br>const int INF = 0x3f3f3f3f;</p>
-<p>int head[MAXN], tot;<br>int headr[MAXN], totr;<br>int d[MAXN];</p>
-<p>struct Edge {<br>    int to, next, dis;<br>} edge[MAXM], edger[MAXM];</p>
-<p>void addedge(int u, int v, int dis) {<br>    edge[tot].to = v;<br>    edge[tot].dis = dis;<br>    edge[tot].next = head[u];<br>    head[u] = tot++;<br>}</p>
-<p>void addedge2(int u, int v, int dis) {<br>    edger[totr].to = v;<br>    edger[totr].dis = dis;<br>    edger[totr].next = headr[u];<br>    headr[u] = totr++;<br>}</p>
-<p>bool vis[MAXN];<br>void SPFA(int s, int h[], Edge e[]) {<br>    memset(d, 0x3f, sizeof d);<br>    memset(vis, false, sizeof vis);<br>    vis[s] = true;<br>    d[s] = 0;<br>    queue&lt;int&gt; Q;<br>    Q.push(s);<br>    while(!Q.empty()) {<br>        int u = Q.front();<br>        Q.pop();<br>        vis[u] = false;<br>        for(int i = h[u] ; i != -1 ; i = e[i].next) {<br>            int v = e[i].to;<br>            if(d[v] &gt; d[u] + e[i].dis) {<br>                d[v] = d[u] + e[i].dis;<br>                if(!vis[v]) {<br>                    vis[v] = true;<br>                    Q.push(v);<br>                }<br>            }<br>        }<br>    }<br>}</p>
-<p>struct Node {<br>    int u, dis;<br>    Node(int u = 0, int dis = 0) : u(u), dis(dis) {}<br>    bool operator &lt; (const Node&amp; t) const {<br>        return dis + d[u] &gt; t.dis + d[t.u];<br>    }<br>};</p>
-<p>int Astar(int s, int t, int k) {<br>    if(s == t) ++k;<br>    priority_queue&lt;Node&gt; Q;<br>    int cnt = 0;<br>    Q.push(Node(s, 0));<br>    while(!Q.empty()) {<br>        Node tmp = Q.top();<br>        Q.pop();<br>        if(tmp.u == t) {<br>            cnt++;<br>            if(cnt == k) return tmp.dis;<br>        }<br>        for(int i = head[tmp.u] ; i != -1 ; i = edge[i].next) {<br>            int v = edge[i].to;<br>            Q.push(Node(v, tmp.dis + edge[i].dis));<br>        }<br>    }<br>    return -1;<br>}</p>
-<p>int main() {<br>    int n, m;<br>    while(scanf(“%d%d”, &amp;n, &amp;m) == 2) {<br>        tot = totr = 0;<br>        memset(head, -1, sizeof head);<br>        memset(headr, -1, sizeof headr);<br>        int u, v, dis;<br>        for(int i = 0 ; i &lt; m ; i++) {<br>            scanf(“%d%d%d”, &amp;u,  &amp;v, &amp;dis);<br>            addedge(u, v, dis);<br>            addedge2(v, u, dis);<br>        }<br>        int s, t, k;<br>        scanf(“%d%d%d”, &amp;s, &amp;t, &amp;k);<br>        SPFA(t, headr, edger);<br>        printf(“%d\n”, Astar(s, t, k));<br>    }<br>    return 0;<br>}<br>/<em><br>4<br>0 1 1<br>0 2 1<br>0 3 1<br>1<br>0 1 2
-</em>/<br><br>&nbsp;</p>
-<p>2.<a href="http://poj.org/problem?id=3013" target="_blank" rel="noopener">Big Christmas Tree</a> (SPFA变形)</p>
-<p>比较巧妙的一个最短路，最短路可以保证每个点在最终答案中的权值贡献最小，答案就是最短路树的权值。</p>
-<p>SPFA用于稀疏图，dij适合稠密图。</p>
-<p>有两个坑点，一个是 距离会爆int，还有一个听说是特判n等于0和n等于1，某些最短路板子会出问题（非常意外我的竟然不用特判）</p>
-<p>AC代码：</p>
-<p><pre class="lang:c++ decode:true ">#include&lt;vector&gt;</pre></p>
-<p>#include&lt;queue&gt;</p>
-<p>#include&lt;algorithm&gt;</p>
-<p>#include&lt;map&gt;</p>
-<p>#include&lt;string&gt;</p>
-<p>#include&lt;cstring&gt;</p>
-<p>#include&lt;cmath&gt;</p>
-<p>#include&lt;cstdlib&gt;</p>
-<p>#include&lt;cstdio&gt;</p>
-<p>using namespace std;<br>const int MAXN = 50000 + 10;<br>const int INF = 0x3f3f3f3f;<br>const long long LLINF = 4557430888798830399LL;<br>typedef long long LL;<br>struct Edge {<br>    int to, next, dis;<br>} edge[MAXN &lt;&lt; 1];<br>LL d[MAXN];<br>int head[MAXN], tot;<br>void addedge(int u, int v, int dis) {<br>    edge[tot].to = v;<br>    edge[tot].next = head[u];<br>    edge[tot].dis = dis;<br>    head[u] = tot++;<br>}</p>
-<p>void init() {<br>    tot = 0;<br>    memset(head, -1, sizeof head);<br>}<br>bool vis[MAXN];<br>void SPFA(int s) {<br>    memset(vis, false, sizeof vis);<br>    memset(d, 0x3f, sizeof d);<br>    vis[s] = true;<br>    d[s] = 0;<br>    queue&lt;int&gt; Q;<br>    Q.push(s);<br>    while(!Q.empty()) {<br>        int u = Q.front();<br>        Q.pop();<br>        vis[u] = false;<br>        for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>            int v = edge[i].to;<br>            if(d[v] &gt; d[u] + edge[i].dis) {<br>                d[v] = d[u] + edge[i].dis;<br>                if(!vis[v]) {<br>                    vis[v] = true;<br>                    Q.push(v);<br>                }<br>            }<br>        }<br>    }<br>}<br>int w[MAXN];</p>
-<p>int main() {<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    while(T–) {<br>        int n, m;<br>        scanf(“%d%d”, &amp;n, &amp;m);<br>        init();<br>        int u, v, dis;<br>        for(int i = 1 ; i &lt;= n ; i++)<br>            scanf(“%d”, &amp;w[i]);<br>        for(int i = 0 ; i &lt; m ; i++) {<br>            scanf(“%d%d%d”, &amp;u, &amp;v, &amp;dis);<br>            addedge(u, v, dis);<br>            addedge(v, u, dis);<br>        }<br>        SPFA(1);<br>        LL ans = 0;<br>        bool ok = true;<br>        for(int i = 1 ; i &lt;= n ; i++) {<br>            if(d[i] == LLINF) {<br>                ok = false;<br>                break;<br>            }<br>            ans += LL(w[i]) * LL(d[i]);<br>        }<br>        if(!ok) printf(“No Answer\n”);<br>        else printf(“%I64u\n”, ans);<br>    }<br>    return 0;<br>}<br><br>3.<a href="http://poj.org/problem?id=3463" target="_blank" rel="noopener">POJ 3463 - Sightseeing</a>（SPFA+记忆化搜索）</p>
-<p>统计起点到终点，长度为最短路和最短路+1的路径数</p>
-<p>先用SPFA求出最短路，所有边反向再建一遍图，在这个图上就可以记忆化搜出最短路条数（第一次直接把状态写在SPFA里，，WA了）。</p>
-<p>最短路+1的路径数同样可以在反向图种求出</p>
-<p>设num[i]为到i点最短路的路径数</p>
-<p>num1[i]为到i点最短路+1长度的路径数</p>
-<p>如果存在反向边&lt;u, v&gt;</p>
-<p>num1[u] = Σnum1[v]      (d[u] = d[v] + dis(u, v))</p>
-<ul>
-<li>Σnum[v]    (d[u] + 1 = d[v] + dis(u, v))</li>
-</ul>
-<p>最终答案为num[t] + num1[t] （t为终点）</p>
-<p>AC代码</p>
-<p><pre class="lang:c++ decode:true">#include&lt;cstdio&gt;</pre></p>
-<p>#include&lt;algorithm&gt;</p>
-<p>#include&lt;set&gt;</p>
-<p>#include&lt;map&gt;</p>
-<p>#include&lt;queue&gt;</p>
-<p>#include&lt;cstring&gt;<br>using namespace std;</p>
-<p>typedef long long LL;<br>const int INF = 0x3f3f3f3f;<br>const int MAXN = 1000 + 10;<br>const int MAXM = 10000 + 10;<br>const int mod = 1000000009;<br>const double eps = 1e-7;</p>
-<p>struct Edge {<br>    int to, next, dis;<br>} edge[MAXM], edger[MAXM];<br>struct Node {<br>    int d, u;<br>    Node(int d, int u) : d(d), u(u) {}<br>    bool operator &lt; (const Node&amp; t) const {<br>        return d &gt; t.d;<br>    }<br>};<br>int head[MAXN], tot;<br>int headr[MAXN], totr;<br>int num[MAXN];<br>int num1[MAXN];<br>int d[MAXN];<br>bool vis[MAXN];<br>void init() {<br>    tot = 0;<br>    totr = 0;<br>    memset(headr, -1, sizeof headr);<br>    memset(head, -1, sizeof head);<br>    memset(num, 0, sizeof num);<br>    memset(num1, 0, sizeof num1);<br>}</p>
-<p>void addedge(int u, int v, int dis) {<br>    edge[tot].to = v;<br>    edge[tot].dis = dis;<br>    edge[tot].next = head[u];<br>    head[u] = tot++;<br>    edger[totr].to = u;<br>    edger[totr].next = headr[v];<br>    edger[totr].dis = dis;<br>    headr[v] = totr++;<br>}</p>
-<p>void SPFA(int s) {<br>    memset(vis, false, sizeof vis);<br>    memset(d, 0x3f, sizeof d);<br>    vis[s] = true;<br>    d[s] = 0;<br>    queue&lt;int&gt; Q;<br>    Q.push(s);<br>    while(!Q.empty()) {<br>        int u = Q.front();<br>        Q.pop();<br>        vis[u] = false;<br>        for(int i = head[u] ; i != -1 ; i = edge[i].next) {<br>            int v = edge[i].to;<br>            if(d[v] &gt; d[u] + edge[i].dis) {<br>                d[v] = d[u] + edge[i].dis;<br>                if(!vis[v]) {<br>                    vis[v] = true;<br>                    Q.push(v);<br>                }<br>            }<br>        }<br>    }<br>}<br>int dfs(int u) {<br>    if(vis[u]) return num[u];<br>    int &amp;res = num[u];<br>    for(int i = headr[u] ; i != -1 ; i = edger[i].next) {<br>        int v = edger[i].to;<br>        if(d[u] == d[v] + edger[i].dis) res += dfs(v);<br>    }<br>    vis[u] = true;<br>    return res;<br>}<br>int dfs1(int u) {<br>    if(vis[u]) return num1[u];<br>    int &amp;res = num1[u];<br>    for(int i = headr[u] ; i != -1 ; i = edger[i].next) {<br>        int v = edger[i].to;<br>        if(d[u] == d[v] + edger[i].dis) res += dfs1(v);<br>        else if(d[u] + 1 == d[v] + edger[i].dis) res += num[v];<br>    }<br>    vis[u] = true;<br>    return res;<br>}</p>
-<p>int main() {<br>    int T;<br>    scanf(“%d”, &amp;T);<br>    while(T–) {<br>        int n, m;<br>        scanf(“%d%d”, &amp;n, &amp;m);<br>        init();<br>        for(int i = 0 ; i &lt; m ; i++) {<br>            int u, v, dis;<br>            scanf(“%d%d%d”, &amp;u, &amp;v, &amp;dis);<br>            addedge(u, v, dis);<br>        }<br>        int s, t;<br>        scanf(“%d%d”, &amp;s, &amp;t);<br>        SPFA(s);<br>        memset(vis, 0, sizeof vis);<br>        num[s] = 1;<br>        for(int i = n ; i &gt;= 1 ; i–) dfs(i);<br>        memset(vis, 0, sizeof vis);<br>        dfs1(t);<br>        printf(“%d\n”, num[t] + num1[t]);<br>    }<br>    return 0;<br>}<br><br>4.<a href="http://acm.pku.edu.cn/JudgeOnline/problem?id=3613" target="_blank" rel="noopener">POJ3613 Cow Relays</a></p>
-<p>floyd倍增，有点类似矩阵快速幂</p>
-<p><a href="https://iridescent.com.cn/index.php/189.html">POJ3613 Cow Relays</a></p>
-<p>5. 01分数规划相关</p>
-<ul>
-<li>POJ2976 裸01分数规划 题解<a href="https://iridescent.com.cn/index.php/199.html">POJ2976</a></li>
-<li>POJ2728 最有比例生成树</li>
-<li>POJ3621 最优比例环 题解<a href="https://iridescent.com.cn/index.php/205.html">POJ3621</a><br>6.生成树专题</li>
-</ul>
-<p>只能算理论AC了一下吧0.0</p>
-<p>POJ1639 单度限制最小生成树</p>
-<p>POJ1679 MST是否唯一/次小生成树</p>
-<p>POJ2728 01分数规划，最优比例</p>
-<p>POJ3164最小树形图，刘朱算法【待看】</p>
-<p>&nbsp;</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1929,7 +1870,7 @@ return 0;
             
               <a href="/archives">
             
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

@@ -235,6 +235,297 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2017/08/31/Redis源码分析-目录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Donglin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Donglin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/31/Redis源码分析-目录/" itemprop="url">Redis源码分析-序言</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-31T20:03:09+08:00">
+                2017-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h1><p>从今年四月份开始，抽出时间就开始陆陆续续阅读Redis源码，经常被那简洁而优雅地源码所震撼。于是想写点东西，一是作为自己度源码的一个总结，二是希望给同样阅读源码的同学一点帮助。此外，由于本人水平有限，如有错误，欢迎指正。  </p>
+<p>我用的Redis版本为3.2.9，操作系统为Ubuntu  </p>
+<h1 id="小白（我）该如何读源码"><a href="#小白（我）该如何读源码" class="headerlink" title="小白（我）该如何读源码"></a>小白（我）该如何读源码</h1><p>Redis是我读的第一个比较大的开源项目，我刚刚开始读源码的时候，有一种无从下手的感觉（说的和现在没有一样）。我觉得我这种小白看源码的时候对下面几点还是比较注意的。</p>
+<ol>
+<li>基础ok，读代码之前要对linux系统调用，网络，数据结构算法有一定了解，还有最重要的，要有耐心，坚持下去。</li>
+<li>用分析工具分析一下代码依赖关系，顺着依赖关系读。clion中的find usage是神器，有时候一个类一堆字段（比如server），用find usage看一下在源码总的使用，有助于理解。</li>
+<li>源码里一部分是写的基础架构（例如事件驱动库，若干数据类型内存之类的），另一部分是功能实现（事物，pubsub，对其他命令的实现等），建议先看完第一部分再看第二部分。<h1 id="目录（未完待续。。）"><a href="#目录（未完待续。。）" class="headerlink" title="目录（未完待续。。）"></a>目录（未完待续。。）</h1></li>
+</ol>
+<ul>
+<li><ol>
+<li>内存管理</li>
+</ol>
+</li>
+<li><ol>
+<li>基础数据结构</li>
+</ol>
+<ul>
+<li><ol>
+<li>Dynamic string</li>
+</ol>
+</li>
+<li><ol>
+<li>Dictionary</li>
+</ol>
+</li>
+<li><ol>
+<li>intset</li>
+</ol>
+</li>
+<li><ol>
+<li>list</li>
+</ol>
+</li>
+<li><ol>
+<li>skip list</li>
+</ol>
+</li>
+<li><ol>
+<li>zip list</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><ol>
+<li>事件驱动 </li>
+</ol>
+<ul>
+<li><ol>
+<li>ae_epoll.c</li>
+</ol>
+</li>
+<li><ol>
+<li>ae.h/ae.c</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><ol>
+<li>网络库</li>
+</ol>
+</li>
+<li><ol>
+<li>Database</li>
+</ol>
+</li>
+<li><ol>
+<li>Networking</li>
+</ol>
+</li>
+<li><ol>
+<li>Notify</li>
+</ol>
+</li>
+<li><ol>
+<li>Multi</li>
+</ol>
+</li>
+<li><ol>
+<li>RDB&amp;AOF</li>
+</ol>
+</li>
+<li><ol>
+<li>PUB&amp;SUB</li>
+</ol>
+</li>
+<li><ol>
+<li>Background I/O</li>
+</ol>
+</li>
+<li><ol>
+<li>Server</li>
+</ol>
+</li>
+<li><ol>
+<li>Client</li>
+</ol>
+</li>
+<li><ol>
+<li>Cluster</li>
+</ol>
+</li>
+<li><ol>
+<li>Latency 检测</li>
+</ol>
+</li>
+<li><ol>
+<li>Replication</li>
+</ol>
+</li>
+<li><ol>
+<li>Redis运行流程</li>
+</ol>
+</li>
+<li><ol>
+<li>杂项（内置算法，内置regex等）  </li>
+</ol>
+</li>
+</ul>
+<h1 id="PR"><a href="#PR" class="headerlink" title="PR"></a>PR</h1><p>如果文中有任何您觉得不正确的/看的不顺眼的/觉得我写的烂的 请随意向<a href="https://github.com/Iridesscent/Blog" target="_blank" rel="noopener">https://github.com/Iridesscent/Blog</a> 这个项目发issue/pull request。  </p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p>// TODO  </p>
+<h1 id="Copyright"><a href="#Copyright" class="headerlink" title="Copyright"></a>Copyright</h1><pre><code>BSD 3-Clause License
+
+Copyright (c) 2017, Donglin Zhuang | dongliniris@gmail.com
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</code></pre><h1 id="联系我"><a href="#联系我" class="headerlink" title="联系我"></a>联系我</h1><p>Email: dongliniris@gmail.com</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2017/05/03/355/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1838,168 +2129,6 @@ If same semantics holds for all subclasses, you can use an instanceof test:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://iridescent.com.cn/2016/10/29/how-to-build-boost-using-visual-studio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Donglin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Donglin's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/29/how-to-build-boost-using-visual-studio/" itemprop="url">How to build Boost using Visual Studio</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-29T22:05:55+08:00">
-                2016-10-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>转自：<a href="https://codeyarns.com/2014/06/06/how-to-build-boost-using-visual-studio/" target="_blank" rel="noopener">How to build Boost using Visual Studio</a></p>
-<p>真心难找啊，终于找到个说得明白的</p>
-<p>If your code compiled with Visual Studio needs Boost, you can get <a href="http://boost.teeks99.com/" target="_blank" rel="noopener">prebuilt Boost libraries</a>. However, if your code needs to link with Boost library files, then the Visual Studio version used for your code and used to build Boost has to match. If you cannot find a prebuilt Boost library matching your Visual Studio then you might have to build Boost by yourself.</p>
-<p>I had this problem since my code was using C++11 features that required Visual Studio 2015, but the prebuilt Boost libraries were only available for Visual Studio 2012.</p>
-<p>To build Boost for Visual Studio, I followed these steps:</p>
-<ul>
-<li>Download the source of Boost from <a href="http://www.boost.org/users/download/" target="_blank" rel="noopener">here</a>. Unzip it anywhere.</li>
-<li>Open the Developer Command Prompt for Visual Studio. Change to the directory where Boost is unzipped.</li>
-<li><p>Build the Boost.Build tool (<code>b2.exe</code>) using this command:</p>
-<pre class="lang:default decode:true ">&gt; bootstrap.bat</pre>
-</li>
-<li><p>Build Boost using this compile invocation:<br><pre class="lang:default decode:true ">&gt; b2 toolset=msvc-14.0 –build-type=complete –abbreviate-paths architecture=x86 address-model=64 install -j4</pre><br><code>toolset</code>: Use this to specify the Visual C++ compiler to use. For Visual Studio 2015, this is <code>msvc-14.0</code>. For other versions of Visual Studio see <a href="https://codeyarns.com/2014/06/06/how-to-build-boost-using-visual-studio/2014/08/06/visual-studio-versions/" target="_blank" rel="noopener">this post</a>.</p>
-</li>
-</ul>
-<p><code>architecture</code>: This is the processor architecture. Keep this <code>x86</code> for both 32-bit and 64-bit builds!</p>
-<p><code>address-model</code>: Use this to specify whether you want <code>32</code> or <code>64</code> bit library to be built.</p>
-<p><code>-j</code>: Use this to specify how many cores to use for parallel compilation.</p>
-<ul>
-<li>This compilation took about 30 minutes and after it is done, the Boost header files and built libraries are dumped in <code>C:\Boost</code>.<br>Note: Detailed steps to build Boost for Visual Studio can be found in <a href="http://stackoverflow.com/questions/2629421" target="_blank" rel="noopener">this StackOverflow post</a>.</li>
-</ul>
-<p><strong>Tried with:</strong> Boost 1.59, Visual Studio 2015 and Windows 7 x64</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2049,7 +2178,7 @@ If same semantics holds for all subclasses, you can use an instanceof test:
             
               <a href="/archives">
             
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

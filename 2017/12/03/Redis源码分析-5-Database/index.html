@@ -95,18 +95,18 @@
 
 
 
-<meta name="description" content="总览源码分析数据定义Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（server.h中）、redisCommand（server.h中）">
+<meta name="description" content="总览源码分析redis数据库相关代码存在于db.c中，为redis提供了基本的数据库实现，包括基础API，命令实现，key生命周期管理，查询参数解析等。 数据定义Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中">
 <meta name="keywords" content="Redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis源码分析(5)-Database">
 <meta property="og:url" content="http://iridescent.com.cn/2017/12/03/Redis源码分析-5-Database/index.html">
 <meta property="og:site_name" content="Donglin&#39;s Blog">
-<meta property="og:description" content="总览源码分析数据定义Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（server.h中）、redisCommand（server.h中）。   12345678910111213/* Redis database r">
+<meta property="og:description" content="总览源码分析redis数据库相关代码存在于db.c中，为redis提供了基本的数据库实现，包括基础API，命令实现，key生命周期管理，查询参数解析等。 数据定义Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（ser">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-12-05T12:06:13.996Z">
+<meta property="og:updated_time" content="2017-12-05T12:12:53.949Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis源码分析(5)-Database">
-<meta name="twitter:description" content="总览源码分析数据定义Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（server.h中）、redisCommand（server.h中）。   12345678910111213/* Redis database r">
+<meta name="twitter:description" content="总览源码分析redis数据库相关代码存在于db.c中，为redis提供了基本的数据库实现，包括基础API，命令实现，key生命周期管理，查询参数解析等。 数据定义Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（ser">
 
 
 
@@ -328,7 +328,8 @@
       
 
       
-        <h1 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h1><h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><h2 id="数据定义"><a href="#数据定义" class="headerlink" title="数据定义"></a>数据定义</h2><p>Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（server.h中）、redisCommand（server.h中）。  </p>
+        <h1 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h1><h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><p>redis数据库相关代码存在于db.c中，为redis提供了基本的数据库实现，包括基础API，命令实现，key生命周期管理，查询参数解析等。</p>
+<h2 id="数据定义"><a href="#数据定义" class="headerlink" title="数据定义"></a>数据定义</h2><p>Redis database相关的代码主要存在于db.c 中，不过还要涉及一些其他的在源码中出现频率非常高的数据结构，例如 redisDb（server.h中）、redisObject/robj（server.h中）、client（server.h中）、redisCommand（server.h中）。  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/* Redis database representation. There are multiple databases identified</span><br><span class="line"> * by integers from 0 (the default database) up to the max configured</span><br><span class="line"> * database. The database number is the &apos;id&apos; field in the structure. */</span><br><span class="line">typedef struct redisDb &#123;</span><br><span class="line">    dict *dict;                 /* The keyspace for this DB */</span><br><span class="line">    dict *expires;              /* Timeout of keys with a timeout set */</span><br><span class="line">    dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP) */</span><br><span class="line">    dict *ready_keys;           /* Blocked keys that received a PUSH */</span><br><span class="line">    dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS */</span><br><span class="line">    struct evictionPoolEntry *eviction_pool;    /* Eviction pool of keys */</span><br><span class="line">    int id;                     /* Database ID */</span><br><span class="line">    long long avg_ttl;          /* Average TTL, just for stats */</span><br><span class="line">&#125; redisDb;</span><br></pre></td></tr></table></figure>
 <p>一个redisDB对象对应一个redis数据库，redis默认有16个数据库，可以通过select命令选择数据库。<br><table class="table">
 <thead>
@@ -501,6 +502,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/12/05/Redis源码分析-6-Networking/" rel="prev" title="Redis源码分析(6)-Networking">
+                Redis源码分析(6)-Networking <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -575,7 +580,7 @@
             
               <a href="/archives">
             
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">88</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
